@@ -257,7 +257,13 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
       
-    #- id: Biglinux-iso-profile
+    - id: Biglinux-iso-profile
+      shell: bash
+      run: |
+        echo "## roda script biglinux-make-iso ##"
+        git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
+        git clone https://github.com/biglinux/https://github.com/biglinux/iso-profiles-biglinux.git
+        ./biglinux-make-iso/biglinux-make-iso
       
     - id: image-build
       shell: bash
