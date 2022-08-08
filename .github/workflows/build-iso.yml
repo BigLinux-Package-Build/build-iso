@@ -37,7 +37,7 @@ jobs:
         with:
           format: 'YY.MM'
           
-      - name: image-build-upload
+      - name: Build and Upload
         uses: BigLinux-Package-Build/build-iso@main
         with:
           edition: ${{ matrix.edition }}
@@ -49,6 +49,10 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
+      ## Tmate ##
+      - name: Setup TMATE session
+        uses: mxschmitt/action-tmate@v3
+        
       - name: rollback
         if: ${{ failure() || cancelled() }}
         run: |
