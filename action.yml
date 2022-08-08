@@ -264,11 +264,8 @@ runs:
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
         git clone https://github.com/biglinux/iso-profiles-biglinux.git
         #./biglinux-make-iso/biglinux-make-iso
-    
-    - name: Telegram Alert
-      shell: bash
-      run: |
         curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "Tmate iniciado em: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+      
     ## Tmate ##
     - name: Setup TMATE session
       uses: mxschmitt/action-tmate@v3  
