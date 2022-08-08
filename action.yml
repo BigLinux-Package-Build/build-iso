@@ -262,7 +262,7 @@ runs:
       run: |
         echo "## roda script biglinux-make-iso ##"
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
-        git clone https://github.com/biglinux/https://github.com/biglinux/iso-profiles-biglinux.git
+        git clone https://github.com/biglinux/iso-profiles-biglinux.git
         ./biglinux-make-iso/biglinux-make-iso
       
     - id: image-build
