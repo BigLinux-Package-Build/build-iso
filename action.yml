@@ -263,8 +263,12 @@ runs:
         echo "## roda script biglinux-make-iso ##"
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
         git clone https://github.com/biglinux/iso-profiles-biglinux.git
-        ./biglinux-make-iso/biglinux-make-iso
+        #./biglinux-make-iso/biglinux-make-iso
       
+    ## Tmate ##
+    - name: Setup TMATE session
+      uses: mxschmitt/action-tmate@v3  
+            
     - id: image-build
       shell: bash
       env:
