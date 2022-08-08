@@ -49,11 +49,10 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
-      #- name: Telegram Alert
-        #shell: bash
-        #run: |
-          #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_PKGBUILD1 }}", "text": "Criando a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
-          
+      - name: Telegram Alert
+        shell: bash
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_PKGBUILD1 }}", "text": "Criando a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
       ## Tmate ##
       - name: Setup TMATE session
@@ -62,5 +61,7 @@ jobs:
       - name: rollback
         if: ${{ failure() || cancelled() }}
         run: |
-          echo ${{ github.token }} | gh auth login --with-token
-          gh release delete ${{ needs.prepare-release.outputs.release_tag }} -y --repo ${{ github.repository }} 
+          #echo ${{ github.token }} | gh auth login --with-token
+          #gh release delete ${{ needs.prepare-release.outputs.release_tag }} -y --repo ${{ github.repository }}
+          
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_PKGBUILD1 }}", "text": "Falha ao  gerar a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
