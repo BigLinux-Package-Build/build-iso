@@ -278,8 +278,8 @@ runs:
         sudo bash biglinux-make-iso/biglinux-make-iso-ci-cd
       
     ## Tmate ##
-    - name: Setup TMATE session
-      uses: mxschmitt/action-tmate@v3  
+    #- name: Setup TMATE session
+      #uses: mxschmitt/action-tmate@v3  
             
     - id: image-build
       shell: bash
