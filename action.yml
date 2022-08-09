@@ -351,9 +351,16 @@ runs:
         touch /home/runner/.ssh/github_actions
         chmod 600 /home/runner/.ssh/github_actions
         ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-        echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent)"
+        echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
         mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
         
+    - id: Torrent
+      shell: bash -O extglob {0}
+      run: |    
+        mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
+        -w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
+        -o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
+    
     - id: upload-github-release
       shell: bash -O extglob {0}
       run: |
@@ -379,7 +386,7 @@ runs:
           
           REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
           gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
-            ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent)
+            ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
         fi
 
     #- name: upload-cdn77
@@ -398,7 +405,7 @@ runs:
         
         #ssh-keyscan -t rsa ${{ inputs.cdn77-host }} >> /home/runner/.ssh/known_hosts
 
-        ### create target dir
+        ## create target dir
         #sshpass -p "${{ inputs.cdn77-pwd }}" rsync -vaP --stats -e ssh ${{ inputs.edition }} \
           #${{ inputs.cdn77-user }}@${{ inputs.cdn77-host }}:/www/
 
