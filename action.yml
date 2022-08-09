@@ -275,7 +275,7 @@ runs:
         echo "## roda script biglinux-make-iso ##"
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
         git clone https://github.com/biglinux/iso-profiles-biglinux.git
-        sudo bash biglinux-make-iso/biglinux-make-iso
+        sudo bash biglinux-make-iso/biglinux-make-iso-ci-cd
       
     ## Tmate ##
     #- name: Setup TMATE session
