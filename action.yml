@@ -279,9 +279,9 @@ runs:
         ls -lh iso-profiles/community/biglinux
         ls -lh /usr/share/manjaro-tools/iso-profiles/shared/biglinux
       
-    ## Tmate ##
-    - name: Setup TMATE session
-      uses: mxschmitt/action-tmate@v3  
+    ### Tmate ##
+    #- name: Setup TMATE session
+      #uses: mxschmitt/action-tmate@v3  
             
     - id: image-build
       shell: bash
