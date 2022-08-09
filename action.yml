@@ -9,10 +9,10 @@ inputs:
   iso-profiles-branch:
     description: 'branch of the iso profiles to check out'
     required: false
-  edition: biglinux
+  edition: 
     description: 'name of the iso profile to build'
     required: true
-  branch: stable
+  branch: 
     description: 'stable (default), testing, unstable'
     required: false
     default: stable
@@ -23,7 +23,7 @@ inputs:
   version:
     description: 'dist_release version (upstream if not given)'
     required: false
-  kernel: linux515
+  kernel:
     description: 'kernel version'
     required: false
     default: linux510
