@@ -9,10 +9,10 @@ inputs:
   iso-profiles-branch:
     description: 'branch of the iso profiles to check out'
     required: false
-  edition:
+  edition: biglinux
     description: 'name of the iso profile to build'
     required: true
-  branch:
+  branch: stable
     description: 'stable (default), testing, unstable'
     required: false
     default: stable
@@ -23,7 +23,7 @@ inputs:
   version:
     description: 'dist_release version (upstream if not given)'
     required: false
-  kernel:
+  kernel: linux515
     description: 'kernel version'
     required: false
     default: linux510
@@ -262,8 +262,8 @@ runs:
       run: |
         echo "## roda script biglinux-make-iso ##"
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
-        #git clone https://github.com/biglinux/iso-profiles-biglinux.git
-        #bash biglinux-make-iso/biglinux-make-iso
+        git clone https://github.com/biglinux/iso-profiles-biglinux.git
+        bash biglinux-make-iso/biglinux-make-iso
       
     ## Tmate ##
     - name: Setup TMATE session
