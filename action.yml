@@ -144,6 +144,18 @@ runs:
                       build
             sudo meson compile -C build
             sudo meson install -C build
+            sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
+            sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
+            sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
+            sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
+            echo '
+            [biglinux-stable]
+            SigLevel = PackageRequired
+            Server = https://repo.biglinux.com.br/stable/$arch
+            
+            [biglinux-testing]
+            SigLevel = PackageRequired
+            Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/pacman.conf
           popd
           sudo install -m644 pacman.conf /etc/pacman.conf
           sudo install -m644 makepkg.conf /etc/
@@ -151,21 +163,21 @@ runs:
           sudo touch /etc/pacman.d/mirrorlist
         popd
         
-    - id: install-biglinux-repo
-      shell: bash
-      run: |
-        sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
-        sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
-        sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
-        sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
-        echo '
-        [biglinux-stable]
-        SigLevel = PackageRequired
-        Server = https://repo.biglinux.com.br/stable/$arch
+    #- id: install-biglinux-repo
+      #shell: bash
+      #run: |
+        #sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
+        #sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
+        #sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
+        #sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
+        #echo '
+        #[biglinux-stable]
+        #SigLevel = PackageRequired
+        #Server = https://repo.biglinux.com.br/stable/$arch
         
-        [biglinux-testing]
-        SigLevel = PackageRequired
-        Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/pacman.conf
+        #[biglinux-testing]
+        #SigLevel = PackageRequired
+        #Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/pacman.conf
         
     - id: install-keyrings
       shell: bash
