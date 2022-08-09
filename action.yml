@@ -274,7 +274,8 @@ runs:
       run: |
         echo "## roda script biglinux-make-iso ##"
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
-        git clone https://github.com/biglinux/iso-profiles-biglinux.git
+        #git clone https://github.com/biglinux/iso-profiles-biglinux.git
+        git clone https://github.com/gitbarnabedikartola/iso-profiles-biglinux.git
         sudo bash -x biglinux-make-iso/biglinux-make-iso-ci-cd
         ls -lh iso-profiles/community/biglinux
         ls -lh /usr/share/manjaro-tools/iso-profiles/shared/biglinux
