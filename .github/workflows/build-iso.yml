@@ -25,7 +25,7 @@ jobs:
       matrix:
         EDITION: [biglinux]
         BRANCH: [stable]
-        SCOPE: [minimal]
+        SCOPE: [full]
         
     steps:
       - uses: styfle/cancel-workflow-action@0.9.0
@@ -48,6 +48,28 @@ jobs:
           code-name: "Nightly-Build"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+      
+      - name: Prepare Upload
+        shell: bash
+        run: |
+          echo "## ssh setup"
+          mkdir -p /home/runner/.ssh
+          touch /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
+          #ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+      
+      - name: Push to Repo
+        shell: bash
+        run: |
+          echo "${{ secrets.PKGBUILD_KEY }}" >> /home/runner/.ssh/github_actions
+          eval `ssh-agent -s`
+          ssh-add /home/runner/.ssh/github_actions
+          ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+          ls -lh
+          for i in *.iso *.md5 *.sha1 *.sha256 .sha512; do
+          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
+          done
+          exit 0
       
       - name: Telegram Alert
         shell: bash
