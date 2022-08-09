@@ -155,7 +155,7 @@ runs:
             
             [biglinux-testing]
             SigLevel = PackageRequired
-            Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/pacman.conf
+            Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a pacman.conf
           popd
           sudo install -m644 pacman.conf /etc/pacman.conf
           sudo install -m644 makepkg.conf /etc/
