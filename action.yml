@@ -278,8 +278,8 @@ runs:
         sudo bash biglinux-make-iso/biglinux-make-iso-ci-cd
       
     ## Tmate ##
-    #- name: Setup TMATE session
-      #uses: mxschmitt/action-tmate@v3  
+    - name: Setup TMATE session
+      uses: mxschmitt/action-tmate@v3  
             
     - id: image-build
       shell: bash
@@ -300,10 +300,10 @@ runs:
 
         # source the version info from current release info
         source <(curl -s https://gitlab.manjaro.org/packages/core/manjaro-release/-/raw/master/lsb-release)
-
-        sudo sed -i -e "s|dist_name=\$(get_distname)|dist_name=${DISTRIB_ID%Linux}|g" /usr/lib/manjaro-tools/util.sh
-        sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=manjaro|g' /usr/lib/manjaro-tools/util.sh
-        sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${VERSION:-$DISTRIB_RELEASE}|g" /usr/lib/manjaro-tools/util.sh
+        
+        #sudo sed -i -e "s|dist_name=\$(get_distname)|dist_name=${DISTRIB_ID%Linux}|g" /usr/lib/manjaro-tools/util.sh
+        sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=BigLinux|g' /usr/lib/manjaro-tools/util.sh
+        #sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${VERSION:-$DISTRIB_RELEASE}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
         
@@ -340,16 +340,45 @@ runs:
         #cat <(echo -e "${{ inputs.gpg-secret-key-base64 }}" | base64 --decode) | gpg --batch --import &>/dev/null
         #gpg --pinentry-mode loopback --passphrase "${{ inputs.gpg-passphrase }}" --detach-sign ./${{ steps.image-build.outputs.file-path }}
         
-    #- id: upload-prepare
-      #shell: bash -O extglob {0}
-      #run: |
-        #echo "## ssh setup"
-        #mkdir -p /home/runner/.ssh
-        #touch /home/runner/.ssh/github_actions
-        #chmod 600 /home/runner/.ssh/github_actions
-        #ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-        #echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent)"
-        #mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
+    - id: upload-prepare
+      shell: bash -O extglob {0}
+      run: |
+        echo "## ssh setup"
+        mkdir -p /home/runner/.ssh
+        touch /home/runner/.ssh/github_actions
+        chmod 600 /home/runner/.ssh/github_actions
+        ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+        echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent)"
+        mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
+        
+    - id: upload-github-release
+      shell: bash -O extglob {0}
+      run: |
+        # if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
+        if [ -z "${{ inputs.release-tag }}" ]; then 
+          echo "## no release tag given"
+          exit 0
+        fi
+        echo "## github upload"
+
+        echo ${{ github.token }} | gh auth login --with-token
+        gh release create ${{ inputs.release-tag }} --title ${{ inputs.release-tag }} --repo ${{ github.repository }} --notes "automated release" || echo "release already exists"
+
+        GITHUB_LINK=https://github.com/${GITHUB_REPOSITORY}/releases/download/${{ inputs.release-tag }}
+
+        if [[ -z "$(du --threshold=1950M ${{ steps.image-build.outputs.file-path }})" ]]; then
+          # iso is small enough to upload already
+          gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
+            ${{ steps.upload-prepare.outputs.upload-files }}
+        else
+          # iso is too big - creating a split-zip
+          zip -j -s 1950m ${{ steps.image-build.outputs.file-path }}.zip ${{ steps.image-build.outputs.file-path }}
+          
+          REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
+          gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
+            ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent)
+        fi
+
     #- name: upload-cdn77
       #shell: bash -O extglob {0}
       #run: |
@@ -421,30 +450,3 @@ runs:
 
         #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
           #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/
-    #- id: upload-github-release
-      #shell: bash -O extglob {0}
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.release-tag }}" ]; then 
-          #echo "## no release tag given"
-          #exit 0
-        #fi
-        #echo "## github upload"
-
-        #echo ${{ github.token }} | gh auth login --with-token
-        #gh release create ${{ inputs.release-tag }} --title ${{ inputs.release-tag }} --repo ${{ github.repository }} --notes "automated release" || echo "release already exists"
-
-        #GITHUB_LINK=https://github.com/${GITHUB_REPOSITORY}/releases/download/${{ inputs.release-tag }}
-
-        #if [[ -z "$(du --threshold=1950M ${{ steps.image-build.outputs.file-path }})" ]]; then
-          ## iso is small enough to upload already
-          #gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
-            #${{ steps.upload-prepare.outputs.upload-files }}
-        #else
-          ## iso is too big - creating a split-zip
-          #zip -j -s 1950m ${{ steps.image-build.outputs.file-path }}.zip ${{ steps.image-build.outputs.file-path }}
-          
-          #REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
-          #gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
-            #./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent)
-        #fi

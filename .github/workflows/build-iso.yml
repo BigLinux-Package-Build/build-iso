@@ -35,7 +35,7 @@ jobs:
       - id: time
         uses: nanzm/get-time-action@v1.1
         with:
-          format: 'YY.MM'
+          format: 'YY.MM.DD'
           
       - name: Build and Upload
         uses: BigLinux-Package-Build/build-iso@main
@@ -49,32 +49,32 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
-      - name: Prepare Upload
-        shell: bash
-        run: |
-          echo "## ssh setup"
-          mkdir -p /home/runner/.ssh
-          touch /home/runner/.ssh/github_actions
-          chmod 600 /home/runner/.ssh/github_actions
-          #ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+      #- name: Prepare Upload
+        #shell: bash
+        #run: |
+          #echo "## ssh setup"
+          #mkdir -p /home/runner/.ssh
+          #touch /home/runner/.ssh/github_actions
+          #chmod 600 /home/runner/.ssh/github_actions
+          ##ssh-agent -a /tmp/ssh_agent.sock > /dev/null
       
-      - name: Push to Repo
-        shell: bash
-        run: |
-          echo "${{ secrets.PKGBUILD_KEY }}" >> /home/runner/.ssh/github_actions
-          eval `ssh-agent -s`
-          ssh-add /home/runner/.ssh/github_actions
-          ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
-          ls -lh
-          for i in *.iso *.md5 *.sha1 *.sha256 .sha512; do
-          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
-          done
-          exit 0
+      #- name: Push to Repo
+        #shell: bash
+        #run: |
+          #echo "${{ secrets.PKGBUILD_KEY }}" >> /home/runner/.ssh/github_actions
+          #eval `ssh-agent -s`
+          #ssh-add /home/runner/.ssh/github_actions
+          #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+          #ls -lh
+          #for i in *.iso *.md5 *.sha1 *.sha256 .sha512; do
+          #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
+          #done
+          #exit 0
       
       - name: Telegram Alert
         shell: bash
         run: |
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "Criando a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "ISO Criada com Sucesso.:", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
       ## Tmate ##
       - name: Setup TMATE session
@@ -86,4 +86,4 @@ jobs:
           #echo ${{ github.token }} | gh auth login --with-token
           #gh release delete ${{ needs.prepare-release.outputs.release_tag }} -y --repo ${{ github.repository }}
           
-          #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "Falha ao  gerar a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "Falha ao gerar a ISO.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
