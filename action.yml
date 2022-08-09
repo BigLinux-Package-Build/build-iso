@@ -261,7 +261,6 @@ runs:
       shell: bash
       run: |
         echo "## roda script biglinux-make-iso ##"
-        cd ~
         git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
         #git clone https://github.com/biglinux/iso-profiles-biglinux.git
         #bash biglinux-make-iso/biglinux-make-iso
