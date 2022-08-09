@@ -64,4 +64,4 @@ jobs:
           #echo ${{ github.token }} | gh auth login --with-token
           #gh release delete ${{ needs.prepare-release.outputs.release_tag }} -y --repo ${{ github.repository }}
           
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "Falha ao  gerar a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID_ISO }}", "text": "Falha ao  gerar a ISO: ${{ env.pkgbuild_folder }} a partir do branch ${{ github.ref_name }}", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
