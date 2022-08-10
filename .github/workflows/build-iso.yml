@@ -23,7 +23,10 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [biglinux]
+        #EDITION: [biglinux]
+        #BRANCH: [stable]
+        #SCOPE: [full]
+        EDITION: [kde]
         BRANCH: [stable]
         SCOPE: [full]
         
@@ -46,7 +49,7 @@ jobs:
           version: ${{ steps.time.outputs.time }}-development
           kernel: linux515
           code-name: "Nightly-Build"
-          iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
+          #iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
       #- name: Prepare Upload
@@ -66,7 +69,7 @@ jobs:
           #ssh-add /home/runner/.ssh/github_actions
           #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
           #ls -lh
-          #for i in *.iso *.md5 *.sha1 *.sha256 .sha512; do
+          #for i in *.iso *.md5 *.sha1 *.sha256 *.sha512 *.torrent; do
           #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
           #done
           #exit 0
