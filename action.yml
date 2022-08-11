@@ -208,7 +208,7 @@ runs:
         popd
 
         sudo pacman-key --init
-        sudo pacman-key --populate archlinux manjaro biglinux
+        sudo pacman-key --populate archlinux manjaro #biglinux
 
         for gpg_key in ${{ inputs.additional-trusted-gpg }}; do
           sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
