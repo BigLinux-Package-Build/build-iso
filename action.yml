@@ -191,12 +191,12 @@ runs:
           sudo install -m0644 manjaro-revoked /usr/share/pacman/keyrings/
         popd
         
-        #sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
-        #pushd biglinux-keyring
-          #sudo install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
-          #sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
-          #sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
-        #popd
+        sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
+        pushd biglinux-keyring
+          sudo install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
+          sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
+          sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
+        popd
 
         mkdir -p archlinux-keyring
         pushd archlinux-keyring
@@ -208,7 +208,7 @@ runs:
         popd
 
         sudo pacman-key --init
-        sudo pacman-key --populate archlinux manjaro #biglinux
+        sudo pacman-key --populate archlinux manjaro biglinux
 
         for gpg_key in ${{ inputs.additional-trusted-gpg }}; do
           sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
