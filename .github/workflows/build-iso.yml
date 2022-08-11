@@ -23,10 +23,10 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        #EDITION: [biglinux]
+        EDITION: [biglinux]
         #BRANCH: [stable]
         #SCOPE: [full]
-        EDITION: [kde]
+        #EDITION: [kde]
         BRANCH: [stable]
         SCOPE: [full]
         
