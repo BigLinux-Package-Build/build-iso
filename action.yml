@@ -275,7 +275,7 @@ runs:
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
-        sudo bash -x biglinux-make-iso-profiles  ci/cd
+        sudo bash biglinux-make-iso-profiles  ci/cd
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
