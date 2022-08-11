@@ -46,9 +46,9 @@ jobs:
           edition: ${{ matrix.edition }}
           branch: ${{ matrix.branch }}
           scope: ${{ matrix.scope }}
-          version: ${{ steps.time.outputs.time }}-development
+          version: ${{ steps.time.outputs.time }}
           kernel: linux515
-          code-name: "Nightly-Build"
+          code-name: "Ruah"
           iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
