@@ -312,7 +312,7 @@ runs:
         
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
-        bash + iso-profiles/pre-config-buildiso.sh
+        bash -x iso-profiles/pre-config-buildiso.sh
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
