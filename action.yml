@@ -144,18 +144,18 @@ runs:
                       build
             sudo meson compile -C build
             sudo meson install -C build
-            sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
-            sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
-            sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
-            sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
-            echo '
-            [biglinux-stable]
-            SigLevel = PackageRequired
-            Server = https://repo.biglinux.com.br/stable/$arch
+            #sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
+            #sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
+            #sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
+            #sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
+            #echo '
+            #[biglinux-stable]
+            #SigLevel = PackageRequired
+            #Server = https://repo.biglinux.com.br/stable/$arch
             
-            [biglinux-testing]
-            SigLevel = PackageRequired
-            Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/pacman.conf
+            #[biglinux-testing]
+            #SigLevel = PackageRequired
+            #Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /etc/pacman.conf
           popd
           sudo install -m644 pacman.conf /etc/pacman.conf
           sudo install -m644 makepkg.conf /etc/
@@ -191,12 +191,12 @@ runs:
           sudo install -m0644 manjaro-revoked /usr/share/pacman/keyrings/
         popd
         
-        sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
-        pushd biglinux-keyring
-          sudo install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
-          sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
-          sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
-        popd
+        #sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
+        #pushd biglinux-keyring
+          #sudo install -m0644 biglinux.gpg /usr/share/pacman/keyrings/
+          #sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
+          #sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
+        #popd
 
         mkdir -p archlinux-keyring
         pushd archlinux-keyring
@@ -269,17 +269,7 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
       
-    #- id: Biglinux-iso-profile
-      #shell: bash
-      #run: |
-        #echo "## roda script biglinux-make-iso ##"
-        #git clone https://github.com/gitbarnabedikartola/biglinux-make-iso.git
-        ##git clone https://github.com/biglinux/iso-profiles-biglinux.git
-        #git clone https://github.com/gitbarnabedikartola/iso-profiles-biglinux.git
-        #sudo bash -x biglinux-make-iso/biglinux-make-iso-ci-cd
-        #ls -lh iso-profiles/community/biglinux
-        #ls -lh /usr/share/manjaro-tools/iso-profiles/shared/biglinux
-      
+
     ### Tmate ##
     #- name: Setup TMATE session
       #uses: mxschmitt/action-tmate@v3  
@@ -312,11 +302,13 @@ runs:
         
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
-        bash -x iso-profiles/pre-config-buildiso.sh
+        bash -x iso-profiles/biglinux-make-iso-profiles/biglinux-make-iso-profiles  makeprofiles
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
+        
+        sudo find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec mv {} BigLinux-$(LC_TIME=C date +%Y-%m-%d-%H-%m)-$KERNEL.iso \;
         
         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
