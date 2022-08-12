@@ -1,4 +1,4 @@
-name: Biglinux_build_iso
+name: Biglinux Build ISO 5.15
 on:
   workflow_dispatch:
   #schedule:
@@ -79,9 +79,8 @@ jobs:
       ### Tmate ##
       #- name: Setup TMATE Session
         #uses: mxschmitt/action-tmate@v3
-        
-          #echo $GITHUB_REPOSITORY > github_repository
-          #echo $GITHUB_RUN_ID github_id
+        #echo $GITHUB_REPOSITORY > github_repository
+        #echo $GITHUB_RUN_ID github_id
           
       - name: Telegram Alert Success
         shell: bash
