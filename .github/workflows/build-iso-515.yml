@@ -1,8 +1,8 @@
 name: Biglinux Build ISO 5.15
 on:
   workflow_dispatch:
-  #schedule:
-    - cron:  '30 2 * * 5'
+  schedule:
+    - cron:  '* 6 * * 5'
 
 jobs:
   prepare-release:
