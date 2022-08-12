@@ -83,6 +83,9 @@ inputs:
   amber:
     description: 'ative mesa-amber'
     required: false
+  mesa-git:
+    description: 'ative mesa-git'
+    required: false
     
 outputs:
   file-path:
@@ -256,6 +259,7 @@ runs:
         OFFICE: ${{ inputs.office-chooser }}
         BUILD_MIRROR: ${{ inputs.build-mirror }}
         AMBER: ${{ inputs.amber }}
+        MESA-GIT: ${{ inputs.mesa-git }}
         
       run: |
         echo "## building iso"
@@ -274,7 +278,7 @@ runs:
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
-        sudo bash biglinux-make-iso-profiles  ci/cd $AMBER
+        sudo bash biglinux-make-iso-profiles  ci/cd $AMBER $MESA-GIT
         cd ../..
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}

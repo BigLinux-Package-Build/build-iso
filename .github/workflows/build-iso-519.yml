@@ -1,4 +1,4 @@
-name: Biglinux Build ISO 5.19
+name: Biglinux Build ISO 5.19 mesa-git
 on:
   workflow_dispatch:
   #schedule:
@@ -49,6 +49,7 @@ jobs:
           version: ${{ steps.time.outputs.time }}
           kernel: linux519
           amber:
+          mesa-git: mesa-git
           code-name: "Ruah"
           iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
