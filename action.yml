@@ -286,9 +286,12 @@ runs:
         FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
         
+        ls -lh
+        echo ${{ steps.image-build.outputs.file-path }}
+        
     ### Tmate ##
-    #- name: Setup TMATE session
-      #uses: mxschmitt/action-tmate@v3  
+    - name: Setup TMATE session
+      uses: mxschmitt/action-tmate@v3  
         
     - id: hash
       shell: bash

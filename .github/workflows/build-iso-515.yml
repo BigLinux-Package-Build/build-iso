@@ -76,6 +76,13 @@ jobs:
           #done
           #exit 0
       
+      ### Tmate ##
+      #- name: Setup TMATE Session
+        #uses: mxschmitt/action-tmate@v3
+        
+          #echo $GITHUB_REPOSITORY > github_repository
+          #echo $GITHUB_RUN_ID github_id
+          
       - name: Telegram Alert Success
         shell: bash
         run: |
@@ -89,9 +96,4 @@ jobs:
           
           curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "Falha ao gerar a ISO. link do erro: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
-          echo $GITHUB_REPOSITORY > github_repository
-          echo $GITHUB_RUN_ID github_id
           
-      ## Tmate ##
-      - name: Setup TMATE Session
-        uses: mxschmitt/action-tmate@v3
