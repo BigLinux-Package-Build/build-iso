@@ -80,7 +80,10 @@ inputs:
   osdn-key:
     description: 'osdn upload credentials'
     required: false
-
+  amber:
+    description: 'ative mesa-amber'
+    required: false
+    
 outputs:
   file-path:
     description: "path of the generated iso"
@@ -252,6 +255,7 @@ runs:
         CODE_NAME: ${{ inputs.code-name }}
         OFFICE: ${{ inputs.office-chooser }}
         BUILD_MIRROR: ${{ inputs.build-mirror }}
+        AMBER: ${{ inputs.amber }}
         
       run: |
         echo "## building iso"
@@ -270,7 +274,8 @@ runs:
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
-        sudo bash biglinux-make-iso-profiles  ci/cd
+        sudo bash biglinux-make-iso-profiles  ci/cd $AMBER
+        cd ../..
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
@@ -328,8 +333,11 @@ runs:
     - id: Torrent
       shell: bash -O extglob {0}
       run: |    
+        #mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
+        #-w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
+        #-o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
         mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
-        -w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
+        -w "https://iso.biglinux.com.br/${{ steps.image-build.outputs.file-path }}" \
         -o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
     
     - id: upload-github-release
