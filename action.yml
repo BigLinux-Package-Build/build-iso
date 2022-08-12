@@ -295,8 +295,8 @@ runs:
         echo ${{ steps.image-build.outputs.file-path }}
         
     ### Tmate ##
-    - name: Setup TMATE session
-      uses: mxschmitt/action-tmate@v3  
+    #- name: Setup TMATE session
+      #uses: mxschmitt/action-tmate@v3  
         
     - id: hash
       shell: bash
