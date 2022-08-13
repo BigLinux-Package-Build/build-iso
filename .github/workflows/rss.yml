@@ -1,57 +1,61 @@
 name: Biglinux Build ISO 5.10 AMBER
 on:
+  RSS:
+    URL:
+      - https://forum.manjaro.org/c/announcements/stable-updates.rss
+      - https://www.biglinux.com.br/feed/
   workflow_dispatch:
-  schedule:
-    - cron:  '* 2 * * 5'
+  #schedule:
+    #- cron:  '* 2 * * 5'
 
 jobs:
-  prepare-release:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
-      - id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          format: 'YYYYMMDDHHmm'
-    outputs:
-      release_tag: ${{ steps.time.outputs.time }}
+  #prepare-release:
+    #runs-on: ubuntu-20.04
+    #steps:
+      #- uses: styfle/cancel-workflow-action@0.9.0
+        #with:
+          #access_token: ${{ github.token }}
+      #- id: time
+        #uses: nanzm/get-time-action@v1.1
+        #with:
+          #format: 'YYYYMMDDHHmm'
+    #outputs:
+      #release_tag: ${{ steps.time.outputs.time }}
       
   build-release:
     runs-on: ubuntu-20.04
-    needs: [prepare-release]
-    strategy:
-      matrix:
-        EDITION: [biglinux]
+    #needs: [prepare-release]
+    #strategy:
+      #matrix:
+        #EDITION: [biglinux]
+        ##BRANCH: [stable]
+        ##SCOPE: [full]
+        ##EDITION: [kde]
         #BRANCH: [stable]
         #SCOPE: [full]
-        #EDITION: [kde]
-        BRANCH: [stable]
-        SCOPE: [full]
         
     steps:
-      - uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
+      #- uses: styfle/cancel-workflow-action@0.9.0
+        #with:
+          #access_token: ${{ github.token }}
           
-      - id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          format: 'YY.MM.DD'
+      #- id: time
+        #uses: nanzm/get-time-action@v1.1
+        #with:
+          #format: 'YY.MM.DD'
           
-      - name: Build and Upload
-        uses: BigLinux-Package-Build/build-iso@main
-        with:
-          edition: ${{ matrix.edition }}
-          branch: ${{ matrix.branch }}
-          scope: ${{ matrix.scope }}
-          version: ${{ steps.time.outputs.time }}
-          kernel: linux510
-          mesa: amber
-          code-name: "Ruah"
-          iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
-          release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+      #- name: Build and Upload
+        #uses: BigLinux-Package-Build/build-iso@main
+        #with:
+          #edition: ${{ matrix.edition }}
+          #branch: ${{ matrix.branch }}
+          #scope: ${{ matrix.scope }}
+          #version: ${{ steps.time.outputs.time }}
+          #kernel: linux510
+          #mesa: amber
+          #code-name: "Ruah"
+          #iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
+          #release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
       #- name: Prepare Upload
         #shell: bash
