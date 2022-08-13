@@ -1,7 +1,6 @@
-name: Biglinux Build ISO Rss
 on:
   rss:
-    url: https://hnrss.org/newest?points=300&count=3
+    url: https://forum.manjaro.org/c/announcements/stable-updates.rss
 jobs:
   request:
     name: Make a HTTP Request
