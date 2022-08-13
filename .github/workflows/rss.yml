@@ -1,3 +1,4 @@
+name: Biglinux Build ISO Rss
 on:
   rss:
     url: https://hnrss.org/newest?points=300&count=3
