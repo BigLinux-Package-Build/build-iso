@@ -284,7 +284,7 @@ runs:
     - name: Setup TMATE session
       uses: mxschmitt/action-tmate@v3  
       
-    - id: image-build parte 2
+    - id: image-build-parte-2
       shell: bash
       env:
         EDITION: ${{ inputs.edition }}
