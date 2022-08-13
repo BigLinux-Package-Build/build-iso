@@ -1,0 +1,19 @@
+on:
+  rss:
+    url: https://hnrss.org/newest?points=300&count=3
+jobs:
+  request:
+    name: Make a HTTP Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make a HTTP Request
+        uses: actionsflow/axios@v1
+        with:
+          url: https://hookb.in/VGPzxoWbdjtE22bwznzE
+          method: POST
+          body: |
+            {
+              "link":"${{ on.rss.outputs.link }}", 
+              "title": "${{ on.rss.outputs.title }}",
+              "content":"<<<${{ on.rss.outputs.contentSnippet }}>>>"
+            }
