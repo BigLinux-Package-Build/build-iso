@@ -80,11 +80,8 @@ inputs:
   osdn-key:
     description: 'osdn upload credentials'
     required: false
-  amber:
-    description: 'ative mesa-amber'
-    required: false
-  mesa-git:
-    description: 'ative mesa-git'
+  mesa:
+    description: 'alternative mesa'
     required: false
     
 outputs:
@@ -258,8 +255,7 @@ runs:
         CODE_NAME: ${{ inputs.code-name }}
         OFFICE: ${{ inputs.office-chooser }}
         BUILD_MIRROR: ${{ inputs.build-mirror }}
-        AMBER: ${{ inputs.amber }}
-        MESA-GIT: ${{ inputs.mesa-git }}
+        MESA: ${{ inputs.mesa }}
         
       run: |
         echo "## building iso"
@@ -278,29 +274,29 @@ runs:
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
-        sudo bash biglinux-make-iso-profiles  ci/cd $AMBER $MESA-GIT
+        sudo bash biglinux-make-iso-profiles  ci/cd $MESA
         cd ../..
         
-        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
+        #sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
-        sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
+        #sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
-        OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
+        #OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
-        #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-        TARGET_ISO_PATH=BigLinux-$(LC_TIME=C date +%Y-%m-%d)-$KERNEL.iso
-        sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
-        echo "::set-output name=file-path::$TARGET_ISO_PATH"
+        ##TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
+        #TARGET_ISO_PATH=BigLinux-$(LC_TIME=C date +%Y-%m-%d)-$KERNEL.iso
+        #sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
+        #echo "::set-output name=file-path::$TARGET_ISO_PATH"
 
-        FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
-        sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
+        #FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
+        #sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
         
-        ls -lh
-        echo ${{ steps.image-build.outputs.file-path }}
+        #ls -lh
+        #echo ${{ steps.image-build.outputs.file-path }}
         
     ### Tmate ##
-    #- name: Setup TMATE session
-      #uses: mxschmitt/action-tmate@v3  
+    - name: Setup TMATE session
+      uses: mxschmitt/action-tmate@v3  
         
     - id: hash
       shell: bash
