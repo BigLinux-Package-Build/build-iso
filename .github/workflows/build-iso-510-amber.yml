@@ -24,9 +24,6 @@ jobs:
     strategy:
       matrix:
         EDITION: [biglinux]
-        #BRANCH: [stable]
-        #SCOPE: [full]
-        #EDITION: [kde]
         BRANCH: [stable]
         SCOPE: [full]
         

@@ -277,26 +277,26 @@ runs:
         sudo bash -x biglinux-make-iso-profiles  ci/cd $MESA
         cd ../..
         
-        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
+        #sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
-        sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
+        #sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
-        OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
+        #OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
-        #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-        TARGET_ISO_PATH=BigLinux-$(LC_TIME=C date +%Y-%m-%d-%H-%M)-$KERNEL.iso
-        sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
-        echo "::set-output name=file-path::$TARGET_ISO_PATH"
+        ##TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
+        #TARGET_ISO_PATH=BigLinux-$(LC_TIME=C date +%Y-%m-%d-%H-%M)-$KERNEL.iso
+        #sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
+        #echo "::set-output name=file-path::$TARGET_ISO_PATH"
 
-        FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
-        sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
+        #FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
+        #sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
         
-        ls -lh
-        echo ${{ steps.image-build.outputs.file-path }}
+        #ls -lh
+        #echo ${{ steps.image-build.outputs.file-path }}
         
     ### Tmate ##
-    #- name: Setup TMATE session
-      #uses: mxschmitt/action-tmate@v3  
+    - name: Setup TMATE session
+      uses: mxschmitt/action-tmate@v3  
         
     - id: hash
       shell: bash
