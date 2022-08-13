@@ -280,6 +280,7 @@ runs:
         cd iso-profiles/biglinux-make-iso-profiles
         sudo bash -x biglinux-make-iso-profiles  ci/cd $MESA $EXTRAREPO
         cd ../..
+        cat community/biglinux/user-repos.conf
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
