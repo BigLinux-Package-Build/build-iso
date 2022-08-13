@@ -281,9 +281,8 @@ runs:
         cd ../..
         
     ### Tmate ##
-    - name: Setup TMATE session
-      uses: mxschmitt/action-tmate@v3  
-      
+    #- name: Setup TMATE session
+      #uses: mxschmitt/action-tmate@v3  
     - id: image-build-parte-2
       shell: bash
       env:
