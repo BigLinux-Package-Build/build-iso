@@ -274,7 +274,9 @@ runs:
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
-        sudo bash biglinux-make-iso-profiles  ci/cd $MESA
+        echo "## MESA ##"
+        echo $MESA
+        sudo bash -x biglinux-make-iso-profiles  ci/cd $MESA
         cd ../..
         
         #sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
