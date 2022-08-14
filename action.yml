@@ -280,23 +280,6 @@ runs:
         sudo bash -x biglinux-make-iso-profiles  ci/cd $MESA $EXTRAREPO
         cd ../..
         
-    ### Tmate ##
-    #- name: Setup TMATE session
-      #uses: mxschmitt/action-tmate@v3  
-    - id: image-build-parte-2
-      shell: bash
-      env:
-        EDITION: ${{ inputs.edition }}
-        BRANCH: ${{ inputs.branch }}
-        SCOPE: ${{ inputs.scope }}
-        VERSION: ${{ inputs.version }}
-        KERNEL: ${{ inputs.kernel }}
-        CODE_NAME: ${{ inputs.code-name }}
-        OFFICE: ${{ inputs.office-chooser }}
-        BUILD_MIRROR: ${{ inputs.build-mirror }}
-        MESA: ${{ inputs.mesa }}
-        EXTRAREPO: ${{ inputs.extrarepo }}
-      run: |  
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
