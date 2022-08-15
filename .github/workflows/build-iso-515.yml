@@ -24,11 +24,9 @@ jobs:
     strategy:
       matrix:
         EDITION: [biglinux]
-        #BRANCH: [stable]
-        #SCOPE: [full]
-        #EDITION: [kde]
         BRANCH: [stable]
         SCOPE: [full]
+        EXTRAREPO: [testing]
         
     steps:
       - uses: styfle/cancel-workflow-action@0.9.0
@@ -49,6 +47,7 @@ jobs:
           version: ${{ steps.time.outputs.time }}
           kernel: linux515
           mesa:
+          extrarepo: ${{ matrix.extrarepo }}
           code-name: "Ruah"
           iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
