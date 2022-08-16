@@ -1,4 +1,4 @@
-name: Biglinux Build ISO 5.10 AMBER
+name: Biglinux Build ISO ALL
 on:
   workflow_dispatch:
   schedule:
