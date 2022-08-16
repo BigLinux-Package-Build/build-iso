@@ -49,7 +49,7 @@ jobs:
           mesa: mesa-git
           extrarepo: ${{ matrix.extrarepo }}
           code-name: "Ruah"
-          iso-profiles-repo: 'https://github.com/gitbarnabedikartola/iso-profiles'
+          iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
       #- name: Prepare Upload

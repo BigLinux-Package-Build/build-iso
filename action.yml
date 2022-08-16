@@ -26,7 +26,7 @@ inputs:
   kernel:
     description: 'kernel version'
     required: false
-    default: linux510
+    default: linux515
   code-name:
     description: 'manjaro code-name (upstream if not given)'
     required: false
