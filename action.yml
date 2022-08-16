@@ -285,7 +285,7 @@ runs:
         echo $BRANCH
         echo $SCOPE
         
-        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
+        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
