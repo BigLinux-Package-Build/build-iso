@@ -23,7 +23,7 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [xiva]
+        EDITION: [xivastudio]
         BRANCH: [stable]
         SCOPE: [full]
         KERNEL: [515]
