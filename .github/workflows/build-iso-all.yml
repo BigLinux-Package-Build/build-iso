@@ -26,7 +26,7 @@ jobs:
         EDITION: [biglinux]
         BRANCH: [stable]
         SCOPE: [full]
-        EXTRAREPO: []
+        #EXTRAREPO: []
         KERNEL: [510, 515, 519]
         
     steps:
