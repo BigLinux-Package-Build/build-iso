@@ -280,6 +280,11 @@ runs:
         sudo bash -x biglinux-make-iso-profiles  ci/cd $MESA $EXTRAREPO
         cd ../..
         
+        echo $KERNEL
+        echo $EDITION
+        echo $BRANCH
+        echo $SCOPE
+        
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k $KERNEL ${OFFICE:+-o}
 
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
