@@ -2,7 +2,7 @@ name: Biglinux Build ISO ALL
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 2 * * 5'
+    - cron:  '0 4 * * 5'
 
 jobs:
   prepare-release:

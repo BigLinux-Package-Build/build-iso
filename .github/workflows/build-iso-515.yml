@@ -2,7 +2,7 @@ name: Biglinux Build ISO 5.15
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '* 2 * * 5'
+    - cron:  '* 4 * * 5'
 
 jobs:
   prepare-release:
@@ -26,7 +26,7 @@ jobs:
         EDITION: [biglinux]
         BRANCH: [stable]
         SCOPE: [full]
-        EXTRAREPO: [testing]
+        #EXTRAREPO: [testing]
         
     steps:
       - uses: styfle/cancel-workflow-action@0.9.0
@@ -45,7 +45,7 @@ jobs:
           branch: ${{ matrix.branch }}
           scope: ${{ matrix.scope }}
           version: ${{ steps.time.outputs.time }}
-          kernel: linux515
+          kernel: 515
           mesa:
           extrarepo: ${{ matrix.extrarepo }}
           code-name: "Ruah"
