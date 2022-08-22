@@ -1,8 +1,8 @@
 name: Biglinux Build ISO 5.19 mesa-git
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '* 4 * * 5'
+  #schedule:
+    #- cron:  '* 4 * * 5'
 
 jobs:
   prepare-release:

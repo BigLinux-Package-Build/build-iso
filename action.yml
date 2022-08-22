@@ -284,6 +284,7 @@ runs:
         echo $EDITION
         echo $BRANCH
         echo $SCOPE
+        echo $MESA
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
