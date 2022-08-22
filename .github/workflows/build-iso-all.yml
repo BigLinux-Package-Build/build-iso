@@ -41,8 +41,8 @@ jobs:
       
       - name: Mesa
         run: |
-          if [ "${{ matrix.kernel }}" <= "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-          elif [ "${{ matrix.kernel }}" >= "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
+          if [ "${{ matrix.kernel }}" -le "510" ];then echo "MESA=amber" >> $GITHUB_ENV
+          elif [ "${{ matrix.kernel }}" -ge "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
           fi
           
       - name: echo Mesa
