@@ -39,11 +39,14 @@ jobs:
         with:
           format: 'YY.MM.DD'
       
-      - name: mesa
+      - name: Mesa
         run: |
           if [ "${{ matrix.kernel }}" <= "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-          elif [ "${{ matrix.kernel }}" >= "510" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
+          elif [ "${{ matrix.kernel }}" >= "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
           fi
+          
+      - name: echo Mesa
+        run: echo ${{ env.MESA }}
       
       - name: Build and Upload
         uses: BigLinux-Package-Build/build-iso@main
