@@ -42,7 +42,10 @@ jobs:
       - name: amber
         if: ${{ matrix.kernel <= 510 }}
         run: echo "mesa=amber" >> $GITHUB_ENV
-      
+        
+      - name: tkg
+        if: ${{ matrix.kernel >= 519 }}
+        run: echo "mesa=mesa-git" >> $GITHUB_ENV
       
       - name: Build and Upload
         uses: BigLinux-Package-Build/build-iso@main
