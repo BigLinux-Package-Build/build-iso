@@ -44,9 +44,7 @@ jobs:
           if [ "${{ matrix.kernel }}" -le "510" ];then echo "MESA=amber" >> $GITHUB_ENV
           elif [ "${{ matrix.kernel }}" -ge "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
           fi
-          
-      - name: echo Mesa
-        run: echo ${{ env.MESA }}
+          echo ${{ env.MESA }}
       
       - name: Build and Upload
         uses: BigLinux-Package-Build/build-iso@main
