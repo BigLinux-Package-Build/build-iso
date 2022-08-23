@@ -60,6 +60,32 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
+      - name: Prepare Upload
+        shell: bash
+        run: |
+          echo "## ssh setup"
+          mkdir -p /home/runner/.ssh
+          touch /home/runner/.ssh/id_ed25519
+          chmod 600 /home/runner/.ssh/id_ed25519
+      
+      - name: Push to Repo
+        shell: bash
+        run: |
+          echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
+          ls -lh
+          ssh xivastudio@shell.sourceforge.net create
+          mkdir iso
+          for i in *.md5 *.sha1 *.sha256 *.sha512 *.torrent *.iso; do
+          cp $i iso/
+          done
+          
+          #CDN77 BigLinux
+          sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --delete --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
+          
+          #SourceForge XIVAStudio
+          rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
+      
       #- name: Prepare Upload
         #shell: bash
         #run: |

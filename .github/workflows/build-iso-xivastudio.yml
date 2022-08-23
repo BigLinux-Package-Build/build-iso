@@ -70,13 +70,8 @@ jobs:
           for i in *.md5 *.sha1 *.sha256 *.sha512 *.torrent *.iso; do
           cp $i iso/
           done
-          
-          #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR }}
-          
-          #test -e $i && rsync -vaPpz -e ssh $i ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR }}
-          #done
-          #exit 0
-          
+          rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR }}
+
           
       #- name: Push to Repo
         #shell: bash
