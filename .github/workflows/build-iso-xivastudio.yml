@@ -26,7 +26,7 @@ jobs:
         EDITION: [xivastudio]
         BRANCH: [stable]
         SCOPE: [full]
-        KERNEL: [515]
+        KERNEL: [515-rt, 519-rt, -xanmod]
         
     steps:
       - uses: styfle/cancel-workflow-action@0.9.0
