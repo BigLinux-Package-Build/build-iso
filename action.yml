@@ -345,12 +345,12 @@ runs:
         -w "https://iso.biglinux.com.br/${{ steps.image-build.outputs.file-path }}" \
         -w "https://ufpr.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -w "https://svwh.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
+        -w "https://iweb.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -w "https://ayera.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -w "https://versaweb.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -w "https://phoenixnap.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -w "https://excellmedia.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -w "https://liquidtelecom.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
-        -w "https://iweb.dl.sourceforge.net/project/xivastudio/iso/alpha/${{ steps.image-build.outputs.file-path }}" \
         -o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
     
     - id: upload-github-release
