@@ -66,10 +66,15 @@ jobs:
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
           ls -lh
           ssh xivastudio@shell.sourceforge.net create
-          for i in *.md5 *.sha1 *.sha256 *.sha512 *.torrent *.iso; do
-          test -e $i && rsync -vaPpz -e ssh $i ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR }}
-          done
-          exit 0
+          mkdir iso
+          #for i in *.md5 *.sha1 *.sha256 *.sha512 *.torrent *.iso; do
+          #cp $i iso/
+          #done
+          
+          
+          #test -e $i && rsync -vaPpz -e ssh $i ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR }}
+          #done
+          #exit 0
           
           
       #- name: Push to Repo
@@ -85,9 +90,9 @@ jobs:
           #done
           #exit 0
       
-      ### Tmate ##
-      #- name: Setup TMATE Session
-        #uses: mxschmitt/action-tmate@v3
+      ## Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
         #echo $GITHUB_REPOSITORY > github_repository
         #echo $GITHUB_RUN_ID github_id
           
