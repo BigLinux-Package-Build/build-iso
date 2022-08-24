@@ -70,6 +70,11 @@ jobs:
       
       - name: Push to Repo
         shell: bash
+        env:
+          key: ${{ secrets.CDN77_KEY }}
+          user: ${{ secrets.CDN77_USER }}
+          host: ${{ secrets.CDN77_HOST }}
+          dir: ${{ secrets.CDN77_ISO_DIR }}
         run: |
           echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
@@ -80,10 +85,7 @@ jobs:
           #cp $i iso/
           #done
           
-          key=${{ secrets.CDN77_KEY }}
-          user=${{ secrets.CDN77_USER }}
-          host=${{ secrets.CDN77_HOST }}
-          dir=${{ secrets.CDN77_ISO_DIR }}
+
           
           
           #CDN77 BigLinux
