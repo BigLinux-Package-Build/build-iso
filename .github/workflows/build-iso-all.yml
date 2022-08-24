@@ -61,7 +61,7 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
-      - name: Prepare Upload
+      - name: Prepare Upload SourceForge e CDN77
         shell: bash
         run: |
           echo "## ssh setup"
@@ -69,63 +69,46 @@ jobs:
           touch /home/runner/.ssh/id_ed25519
           chmod 600 /home/runner/.ssh/id_ed25519
       
-      - name: Push to Repo
+      - name: Push to SourceForge e CDN77
         shell: bash
         run: |
           echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
           ssh-keyscan -t ecdsa ${{ secrets.CDN77_HOST }} >> /home/runner/.ssh/known_hosts
           ls -lh
-          ssh xivastudio@shell.sourceforge.net create
           mkdir iso
-          for i in *.md5 *.torrent *.iso; do
+          for i in *.iso *.torrent *.pkgs *.md5; do
           cp $i iso/
           done
           
           #CDN77 BigLinux
-          sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
-          #--delete
+          #sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
+          ##--delete
           
           #SourceForge XIVAStudio
+          ssh xivastudio@shell.sourceforge.net create
           rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
-          
-      #- name: Make HTML
-        #shell: bash
-        #run: |
-          ##cd iso
-          #iso510=https://iso.biglinux.com.br/`ls *510*.iso`
-          #md5510=https://iso.biglinux.com.br/`ls *510*.iso.md5`
-          #torrent510=https://iso.biglinux.com.br/`ls *510*.iso.torrent`
-          #iso515=https://iso.biglinux.com.br/`ls *515*.iso`
-          #md5515=https://iso.biglinux.com.br/`ls *515*.iso.md5`
-          #torrent515=https://iso.biglinux.com.br/`ls *515*.iso.torrent`
-          #iso519=https://iso.biglinux.com.br/`ls *519*.iso`
-          #md5519=https://iso.biglinux.com.br/`ls *519*.iso.md5`
-          #torrent519=https://iso.biglinux.com.br/`ls *519*.iso.torrent`
-          
-          
       
-      #- name: Prepare Upload
-        #shell: bash
-        #run: |
-          #echo "## ssh setup"
+      - name: Prepare Upload Nimbus
+        shell: bash
+        run: |
+          echo "## ssh setup"
           #mkdir -p /home/runner/.ssh
-          #touch /home/runner/.ssh/github_actions
-          #chmod 600 /home/runner/.ssh/github_actions
-          ##ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+          touch /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
       
-      #- name: Push to Repo
-        #shell: bash
-        #run: |
-          #echo "${{ secrets.PKGBUILD_KEY }}" >> /home/runner/.ssh/github_actions
-          #eval `ssh-agent -s`
-          #ssh-add /home/runner/.ssh/github_actions
-          #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
-          #ls -lh
-          #for i in *.iso *.md5 *.sha1 *.sha256 *.sha512 *.torrent; do
-          #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
-          #done
-          #exit 0
+      - name: Push to Repo Nimbus
+        shell: bash
+        run: |
+          echo "${{ secrets.PKGBUILD_KEY }}" >> /home/runner/.ssh/github_actions
+          eval `ssh-agent -s`
+          ssh-add /home/runner/.ssh/github_actions
+          ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+          ls -lh
+          for i in *.iso *.torrent *.pkgs *.md5; do
+          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
+          done
+          exit 0
       
       ## Tmate ##
       #- name: Setup TMATE Session
@@ -148,3 +131,17 @@ jobs:
           curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "Falha ao gerar ISO  ${{ github.workflow }} link https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false, "disable_web_page_preview": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
           
+
+      #- name: Make HTML
+        #shell: bash
+        #run: |
+          ##cd iso
+          #iso510=https://iso.biglinux.com.br/`ls *510*.iso`
+          #md5510=https://iso.biglinux.com.br/`ls *510*.iso.md5`
+          #torrent510=https://iso.biglinux.com.br/`ls *510*.iso.torrent`
+          #iso515=https://iso.biglinux.com.br/`ls *515*.iso`
+          #md5515=https://iso.biglinux.com.br/`ls *515*.iso.md5`
+          #torrent515=https://iso.biglinux.com.br/`ls *515*.iso.torrent`
+          #iso519=https://iso.biglinux.com.br/`ls *519*.iso`
+          #md5519=https://iso.biglinux.com.br/`ls *519*.iso.md5`
+          #torrent519=https://iso.biglinux.com.br/`ls *519*.iso.torrent`
