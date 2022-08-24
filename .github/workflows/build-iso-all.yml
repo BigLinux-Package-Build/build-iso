@@ -74,6 +74,7 @@ jobs:
         run: |
           echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
+          ssh-keyscan -t ecdsa {{ secrets.CDN77_HOST }} >> /home/runner/.ssh/known_hosts
           ls -lh
           ssh xivastudio@shell.sourceforge.net create
           mkdir iso
@@ -81,19 +82,11 @@ jobs:
           #cp $i iso/
           #done
           
-          echo ${{ secrets.CDN77_KEY }} >> key
-          key=$(cat key)
-          echo ${{ secrets.CDN77_USER }} >> user
-          user=$(cat user)
-          echo ${{ secrets.CDN77_HOST }} >> host
-          host=$(cat host)
-          echo ${{ secrets.CDN77_ISO_DIR }} >> dir
-          dir=$(cat dir)
+          #CDN77 BigLinux
+          sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
+          #--delete
           
-          ###CDN77 BigLinux
-          #sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --delete --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
-          
-          ###SourceForge XIVAStudio
+          #SourceForge XIVAStudio
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
           
       #- name: Make HTML
@@ -135,8 +128,8 @@ jobs:
           #exit 0
       
       ## Tmate ##
-      - name: Setup TMATE Session
-        uses: mxschmitt/action-tmate@v3
+      #- name: Setup TMATE Session
+        #uses: mxschmitt/action-tmate@v3
         
         #echo $GITHUB_REPOSITORY > github_repository
         #echo $GITHUB_RUN_ID github_id
