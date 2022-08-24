@@ -373,6 +373,55 @@ runs:
           gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
             ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
         fi
+          
+    #- name: upload-sourceforge
+      #shell: bash -O extglob {0}
+      #env:
+        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      #run: |
+        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
+        #if [ -z "${{ inputs.sf-project }}" ] || [ -z "${{ inputs.sf-user }}" ] || [ -z "${{ inputs.sf-key }}" ]; then 
+          #echo "## not (all) credentials given for sourceforge upload"
+          #exit 0
+        #fi
+        #echo "## sourceforge upload"
+        
+        #ssh-keyscan -t rsa frs.sourceforge.net >> /home/runner/.ssh/known_hosts
+        #echo "${{ inputs.sf-key }}" >> /home/runner/.ssh/github_actions
+        #ssh-add /home/runner/.ssh/github_actions
+
+        ### create target dir
+        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
+          #${{ inputs.sf-user }}@frs.sourceforge.net:/home/frs/project/${{ inputs.sf-project }}/
+
+        ### upload
+        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
+          #${{ inputs.sf-user }}@frs.sourceforge.net:/home/frs/project/${{ inputs.sf-project }}/${{ inputs.edition }}/${{ inputs.version }}/
+          
+    #- name: upload-osdn
+      #shell: bash -O extglob {0}
+      #env:
+        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      #run: |
+        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
+        #if [ -z "${{ inputs.osdn-project }}" ] || [ -z "${{ inputs.osdn-user }}" ] || [ -z "${{ inputs.osdn-key }}" ]; then 
+          #echo "## not (all) credentials given for osdn upload"
+          #exit 0
+        #fi
+        #echo "## osdn upload"
+
+        #ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+        #echo "${{ inputs.osdn-key }}" >> /home/runner/.ssh/github_actions
+        #ssh-add /home/runner/.ssh/github_actions
+
+        ### create target dir
+        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
+          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/m/ma/${{ inputs.osdn-project }}/
+
+        #OSDN_GROUP=$(echo ${{ inputs.osdn-project }} | cut -c 1)/$(echo ${{ inputs.osdn-project }} | cut -c 1-2)
+
+        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
+          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/
 
     #- name: upload-cdn77
       #shell: bash -O extglob {0}
@@ -398,51 +447,3 @@ runs:
         #sshpass -p "${{ inputs.cdn77-pwd }}" rsync -vaP \
           #--stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
           #${{ inputs.cdn77-user }}@${{ inputs.cdn77-host }}:/www/${{ inputs.edition }}/${{ inputs.version }}/
-    
-    #- name: upload-sourceforge
-      #shell: bash -O extglob {0}
-      #env:
-        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.sf-project }}" ] || [ -z "${{ inputs.sf-user }}" ] || [ -z "${{ inputs.sf-key }}" ]; then 
-          #echo "## not (all) credentials given for sourceforge upload"
-          #exit 0
-        #fi
-        #echo "## sourceforge upload"
-        
-        #ssh-keyscan -t rsa frs.sourceforge.net >> /home/runner/.ssh/known_hosts
-        #echo "${{ inputs.sf-key }}" >> /home/runner/.ssh/github_actions
-        #ssh-add /home/runner/.ssh/github_actions
-
-        ### create target dir
-        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
-          #${{ inputs.sf-user }}@frs.sourceforge.net:/home/frs/project/${{ inputs.sf-project }}/
-
-        ### upload
-        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
-          #${{ inputs.sf-user }}@frs.sourceforge.net:/home/frs/project/${{ inputs.sf-project }}/${{ inputs.edition }}/${{ inputs.version }}/
-    #- name: upload-osdn
-      #shell: bash -O extglob {0}
-      #env:
-        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.osdn-project }}" ] || [ -z "${{ inputs.osdn-user }}" ] || [ -z "${{ inputs.osdn-key }}" ]; then 
-          #echo "## not (all) credentials given for osdn upload"
-          #exit 0
-        #fi
-        #echo "## osdn upload"
-
-        #ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
-        #echo "${{ inputs.osdn-key }}" >> /home/runner/.ssh/github_actions
-        #ssh-add /home/runner/.ssh/github_actions
-
-        ### create target dir
-        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
-          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/m/ma/${{ inputs.osdn-project }}/
-
-        #OSDN_GROUP=$(echo ${{ inputs.osdn-project }} | cut -c 1)/$(echo ${{ inputs.osdn-project }} | cut -c 1-2)
-
-        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
-          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/

@@ -111,13 +111,6 @@ jobs:
           done
           exit 0
       
-      ## Tmate ##
-      #- name: Setup TMATE Session
-        #uses: mxschmitt/action-tmate@v3
-        
-        #echo $GITHUB_REPOSITORY > github_repository
-        #echo $GITHUB_RUN_ID github_id
-          
       - name: Telegram Alert Success
         shell: bash
         run: |
@@ -131,18 +124,31 @@ jobs:
           
           curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "Falha ao gerar ISO  ${{ github.workflow }} link https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false, "disable_web_page_preview": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
+      ## Tmate ##
+      #- name: Setup TMATE Session
+        #uses: mxschmitt/action-tmate@v3
           
+      #- name: upload-osdn
+      #shell: bash -O extglob {0}
+      #env:
+        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      #run: |
+        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
+        #if [ -z "${{ inputs.osdn-project }}" ] || [ -z "${{ inputs.osdn-user }}" ] || [ -z "${{ inputs.osdn-key }}" ]; then 
+          #echo "## not (all) credentials given for osdn upload"
+          #exit 0
+        #fi
+        #echo "## osdn upload"
 
-      #- name: Make HTML
-        #shell: bash
-        #run: |
-          ##cd iso
-          #iso510=https://iso.biglinux.com.br/`ls *510*.iso`
-          #md5510=https://iso.biglinux.com.br/`ls *510*.iso.md5`
-          #torrent510=https://iso.biglinux.com.br/`ls *510*.iso.torrent`
-          #iso515=https://iso.biglinux.com.br/`ls *515*.iso`
-          #md5515=https://iso.biglinux.com.br/`ls *515*.iso.md5`
-          #torrent515=https://iso.biglinux.com.br/`ls *515*.iso.torrent`
-          #iso519=https://iso.biglinux.com.br/`ls *519*.iso`
-          #md5519=https://iso.biglinux.com.br/`ls *519*.iso.md5`
-          #torrent519=https://iso.biglinux.com.br/`ls *519*.iso.torrent`
+        #ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+        #echo "${{ inputs.osdn-key }}" >> /home/runner/.ssh/github_actions
+        #ssh-add /home/runner/.ssh/github_actions
+
+        ### create target dir
+        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
+          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/m/ma/${{ inputs.osdn-project }}/
+
+        #OSDN_GROUP=$(echo ${{ inputs.osdn-project }} | cut -c 1)/$(echo ${{ inputs.osdn-project }} | cut -c 1-2)
+
+        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
+          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/
