@@ -80,9 +80,15 @@ jobs:
           #cp $i iso/
           #done
           
+          key=${{ secrets.CDN77_KEY }}
+          user=${{ secrets.CDN77_USER }}
+          host=${{ secrets.CDN77_HOST }}
+          dir=${{ secrets.CDN77_ISO_DIR }}
+          
+          
           #CDN77 BigLinux
-          echo "sshpass -p ${{ secrets.CDN77_KEY }} rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}"
-          #--delete
+          #sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
+          #--delete 
           
           #SourceForge XIVAStudio
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
@@ -126,8 +132,8 @@ jobs:
           #exit 0
       
       ## Tmate ##
-      #- name: Setup TMATE Session
-        #uses: mxschmitt/action-tmate@v3
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
         
         #echo $GITHUB_REPOSITORY > github_repository
         #echo $GITHUB_RUN_ID github_id
