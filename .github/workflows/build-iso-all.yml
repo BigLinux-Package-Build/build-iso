@@ -74,7 +74,7 @@ jobs:
         run: |
           echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
-          ssh-keyscan -t ecdsa {{ secrets.CDN77_HOST }} >> /home/runner/.ssh/known_hosts
+          ssh-keyscan -t ecdsa ${{ secrets.CDN77_HOST }} >> /home/runner/.ssh/known_hosts
           ls -lh
           ssh xivastudio@shell.sourceforge.net create
           mkdir iso
