@@ -1,4 +1,4 @@
-name: Biglinux Build ISO ALL
+name: Biglinux Build ISO Matrix
 on:
   workflow_dispatch:
   schedule:
