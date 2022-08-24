@@ -80,6 +80,12 @@ jobs:
           #cp $i iso/
           #done
           
+          echo ${{ secrets.CDN77_KEY }} >> key
+          echo ${{ secrets.CDN77_USER }} >> user
+          echo ${{ secrets.CDN77_HOST }} >> host
+          echo ${{ secrets.CDN77_ISO_DIR }} >> dir
+          
+          
           ###CDN77 BigLinux
           #sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --delete --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
           
