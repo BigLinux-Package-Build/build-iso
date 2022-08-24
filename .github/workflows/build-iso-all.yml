@@ -46,19 +46,19 @@ jobs:
           fi
           echo ${{ env.MESA }}
       
-      #- name: Build and Upload
-        #uses: BigLinux-Package-Build/build-iso@main
-        #with:
-          #edition: ${{ matrix.edition }}
-          #branch: ${{ matrix.branch }}
-          #scope: ${{ matrix.scope }}
-          #version: ${{ steps.time.outputs.time }}
-          #kernel: ${{ matrix.kernel }}
-          #mesa: ${{ env.MESA }}
-          #extrarepo: ${{ matrix.extrarepo }}
-          #code-name: "Ruah"
-          #iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
-          #release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+      - name: Build and Upload
+        uses: BigLinux-Package-Build/build-iso@main
+        with:
+          edition: ${{ matrix.edition }}
+          branch: ${{ matrix.branch }}
+          scope: ${{ matrix.scope }}
+          version: ${{ steps.time.outputs.time }}
+          kernel: ${{ matrix.kernel }}
+          mesa: ${{ env.MESA }}
+          extrarepo: ${{ matrix.extrarepo }}
+          code-name: "Ruah"
+          iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
+          release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
       - name: Prepare Upload
         shell: bash
@@ -70,26 +70,29 @@ jobs:
       
       - name: Push to Repo
         shell: bash
-        env:
-          KEY: ${{ secrets.CDN77_KEY }}
-          USER: ${{ secrets.CDN77_USER }}
-          HOST: ${{ secrets.CDN77_HOST }}
-          DIR: ${{ secrets.CDN77_ISO_DIR }}
         run: |
           echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
           ls -lh
-          #ssh xivastudio@shell.sourceforge.net create
+          ssh xivastudio@shell.sourceforge.net create
           mkdir iso
           #for i in *.md5 *.torrent *.iso; do
           #cp $i iso/
           #done
           
-          #CDN77 BigLinux
-          #sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
-          #--delete 
+          echo ${{ secrets.CDN77_KEY }} >> key
+          key=$(cat key)
+          echo ${{ secrets.CDN77_USER }} >> user
+          user=$(cat user)
+          echo ${{ secrets.CDN77_HOST }} >> host
+          host=$(cat host)
+          echo ${{ secrets.CDN77_ISO_DIR }} >> dir
+          dir=$(cat dir)
           
-          #SourceForge XIVAStudio
+          ###CDN77 BigLinux
+          #sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --delete --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
+          
+          ###SourceForge XIVAStudio
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
           
       #- name: Make HTML
