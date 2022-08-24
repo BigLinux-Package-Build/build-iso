@@ -28,12 +28,13 @@ jobs:
         BRANCH: [stable]
         SCOPE: [full]
         #EXTRAREPO: []
-        KERNEL: [510, 515, 519]
+        #KERNEL: [510, 515, 519]
+        KERNEL: [515]
         
-    steps:
-      - uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
+    #steps:
+      #- uses: styfle/cancel-workflow-action@0.9.0
+        #with:
+          #access_token: ${{ github.token }}
           
       - id: time
         uses: nanzm/get-time-action@v1.1
