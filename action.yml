@@ -398,6 +398,7 @@ runs:
         #sshpass -p "${{ inputs.cdn77-pwd }}" rsync -vaP \
           #--stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
           #${{ inputs.cdn77-user }}@${{ inputs.cdn77-host }}:/www/${{ inputs.edition }}/${{ inputs.version }}/
+    
     #- name: upload-sourceforge
       #shell: bash -O extglob {0}
       #env:
