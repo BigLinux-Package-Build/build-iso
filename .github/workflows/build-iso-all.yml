@@ -23,7 +23,8 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [biglinux]
+        #EDITION: [biglinux]
+        EDITION: [netinstall]
         BRANCH: [stable]
         SCOPE: [full]
         #EXTRAREPO: []
