@@ -23,13 +23,11 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        #EDITION: [biglinux]
-        EDITION: [netinstall]
+        EDITION: [biglinux]
         BRANCH: [stable]
         SCOPE: [full]
         #EXTRAREPO: []
-        #KERNEL: [510, 515, 519]
-        KERNEL: [515]
+        KERNEL: [510, 515, 519]
         
     steps:
       #- uses: styfle/cancel-workflow-action@0.9.0
