@@ -76,7 +76,7 @@ jobs:
           ls -lh
           ssh xivastudio@shell.sourceforge.net create
           mkdir iso
-          for i in *.md5 *.sha1 *.sha256 *.sha512 *.torrent *.iso; do
+          for i in *.md5 *.torrent *.iso; do
           cp $i iso/
           done
           
@@ -85,6 +85,22 @@ jobs:
           
           #SourceForge XIVAStudio
           rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
+          
+      - name: Prepare Upload
+        shell: bash
+        run: |
+          cd iso
+          iso510=https://iso.biglinux.com.br/`ls *510*.iso`
+          md5510=https://iso.biglinux.com.br/`ls *510*.iso.md5`
+          torrent510=https://iso.biglinux.com.br/`ls *510*.iso.torrent`
+          iso515=https://iso.biglinux.com.br/`ls *515*.iso`
+          md5515=https://iso.biglinux.com.br/`ls *515*.iso.md5`
+          torrent515=https://iso.biglinux.com.br/`ls *515*.iso.torrent`
+          iso519=https://iso.biglinux.com.br/`ls *519*.iso`
+          md5519=https://iso.biglinux.com.br/`ls *519*.iso.md5`
+          torrent519=https://iso.biglinux.com.br/`ls *519*.iso.torrent`
+          
+          
       
       #- name: Prepare Upload
         #shell: bash
