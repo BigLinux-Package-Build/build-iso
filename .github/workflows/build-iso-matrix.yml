@@ -48,32 +48,25 @@ jobs:
           fi
           echo ${{ env.MESA }}
       
-      #- name: Build and Upload
-        #uses: BigLinux-Package-Build/build-iso@main
-        #with:
-          #edition: ${{ matrix.edition }}
-          #branch: ${{ matrix.branch }}
-          #scope: ${{ matrix.scope }}
-          #version: ${{ steps.time.outputs.time }}
-          #kernel: ${{ matrix.kernel }}
-          #mesa: ${{ env.MESA }}
-          #extrarepo: ${{ matrix.extrarepo }}
-          #code-name: "Ruah"
-          #iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
-          #release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+      - name: Build and Upload
+        uses: BigLinux-Package-Build/build-iso@main
+        with:
+          edition: ${{ matrix.edition }}
+          branch: ${{ matrix.branch }}
+          scope: ${{ matrix.scope }}
+          version: ${{ steps.time.outputs.time }}
+          kernel: ${{ matrix.kernel }}
+          mesa: ${{ env.MESA }}
+          extrarepo: ${{ matrix.extrarepo }}
+          code-name: "Ruah"
+          iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
+          release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
       - name: Prepare Files to Upload
         shell: bash
         run: |
           ls -lh
           mkdir iso
-          
-          #teste
-          touch xpto.iso
-          touch xpto.iso.torrent
-          touch xpto.iso.pkgs
-          touch xpto.iso.md5
-          
           for i in *.iso *.torrent *.pkgs *.md5; do
           cp $i iso/
           done
@@ -92,10 +85,8 @@ jobs:
           
           #push files
           for i in *.iso *.torrent *.pkgs *.md5; do
-          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.XPTO_CAZINHA }}
-          #${{ secrets.BUILD_ISO_DIR }}
+          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
           done
-          exit 0
           
       - name: Push to SourceForge
         shell: bash
