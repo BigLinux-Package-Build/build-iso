@@ -92,7 +92,8 @@ jobs:
           
           #push files
           for i in *.iso *.torrent *.pkgs *.md5; do
-          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
+          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.XPTO_CAZINHA }}
+          #${{ secrets.BUILD_ISO_DIR }}
           done
           exit 0
           
@@ -121,10 +122,10 @@ jobs:
           #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           mkdir -p /home/runner/.ssh
-          touch /home/runner/.ssh/github_actions
-          chmod 600 /home/runner/.ssh/github_actions
-          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/github_actions
-          ssh-add /home/runner/.ssh/github_actions
+          touch /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+          #ssh-add /home/runner/.ssh/github_actions
           ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
         
           ### create target dir
