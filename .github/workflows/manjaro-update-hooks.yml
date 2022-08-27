@@ -24,7 +24,7 @@ jobs:
         shell: bash
         run: |
           update=$(curl -s https://forum.manjaro.org/c/announcements/stable-updates/12.rss | grep '<title>\[Stable Update\]' | sed 's|.*\[Stable Update] ||g' | cut -f1-3 -d- | head -n1)
-          if [ "$update" != "$(date +%Y-%m-%d)" ]; then 
+          if [ "$update" = "$(date +%Y-%m-%d)" ]; then 
           
           
           curl -X POST -H "Accept: application/json" -H "Authorization: token ${{ secrets.WEBHOOK_TOKEN }}" --data '{"event_type": "${{ github.repository }}", "client_payload": { "version": "1.2.3"}}' https://api.github.com/repos/BigLinux-Package-Build/build-iso/dispatches
