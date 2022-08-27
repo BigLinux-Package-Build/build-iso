@@ -4,6 +4,11 @@ on:
   schedule:
     - cron:  '* 4 * * 5'
 
+  repository_dispatch:
+    types:
+      - webhook
+      - '**'
+    
 jobs:
   prepare-release:
     runs-on: ubuntu-20.04
@@ -50,48 +55,43 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
       
-      - name: Prepare Upload
+      - name: Prepare Files to Upload
+        shell: bash
+        run: |
+          ls -lh
+          mkdir iso
+          for i in *.iso *.torrent *.pkgs *.md5; do
+          cp $i iso/
+          done
+      
+      - name: Push to Repo SourceForge
         shell: bash
         run: |
           echo "## ssh setup"
           mkdir -p /home/runner/.ssh
           touch /home/runner/.ssh/id_ed25519
           chmod 600 /home/runner/.ssh/id_ed25519
-      
-      
-      - name: Push to Repo
-        shell: bash
-        run: |
           echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
           ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
-          ls -lh
+          
           ssh xivastudio@shell.sourceforge.net create
-          mkdir iso
-          for i in *.md5 *.sha1 *.sha256 *.sha512 *.torrent *.iso; do
-          cp $i iso/
-          done
           rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR }}
 
-          
-      #- name: Push to Repo
-        #shell: bash
-        #run: |
-          #echo "${{ secrets.PKGBUILD_KEY }}" >> /home/runner/.ssh/github_actions
-          #eval `ssh-agent -s`
-          #ssh-add /home/runner/.ssh/github_actions
-          #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
-          #ls -lh
-          #for i in *.iso *.md5 *.sha1 *.sha256 *.sha512 *.torrent; do
-          #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.BUILD_ISO_DIR }}
-          #done
-          #exit 0
+      - name: Upload OSDN
+        shell: bash -O extglob {0}
+        run: |
+          mkdir -p /home/runner/.ssh
+          touch /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+          ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+        
+          rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
       
       ## Tmate ##
-      - name: Setup TMATE Session
-        uses: mxschmitt/action-tmate@v3
-        #echo $GITHUB_REPOSITORY > github_repository
-        #echo $GITHUB_RUN_ID github_id
-          
+      #- name: Setup TMATE Session
+        #uses: mxschmitt/action-tmate@v3
+
       - name: Telegram Alert Success
         shell: bash
         run: |
