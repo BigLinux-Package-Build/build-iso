@@ -60,31 +60,31 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
-      #- name: Prepare Files to Upload
-        #shell: bash
-        #run: |
-          #ls -lh
-          #mkdir iso
-          #for i in *.iso *.torrent *.pkgs *.md5; do
-          #cp $i iso/
-          #done
+      - name: Prepare Files to Upload
+        shell: bash
+        run: |
+          ls -lh
+          mkdir iso
+          for i in *.iso *.torrent *.pkgs *.md5; do
+          cp $i iso/
+          done
       
-      #- name: Push to Repo Nimbus
-        #shell: bash
-        #run: |
-          #echo "## ssh setup"
-          #mkdir -p /home/runner/.ssh
-          #touch /home/runner/.ssh/github_actions
-          #chmod 600 /home/runner/.ssh/github_actions
-          #echo "${{ secrets.PKGBUILD_KEY }}" > /home/runner/.ssh/github_actions
-          #eval `ssh-agent -s`
-          #ssh-add /home/runner/.ssh/github_actions
-          #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+      - name: Push to Repo Nimbus
+        shell: bash
+        run: |
+          echo "## ssh setup"
+          mkdir -p /home/runner/.ssh
+          touch /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
+          echo "${{ secrets.PKGBUILD_KEY }}" > /home/runner/.ssh/github_actions
+          eval `ssh-agent -s`
+          ssh-add /home/runner/.ssh/github_actions
+          ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
           
-          ##push files
-          #for i in *.iso *.torrent *.pkgs *.md5; do
-          #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
-          #done
+          #push files
+          for i in *.iso *.torrent *.pkgs *.md5; do
+          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
+          done
           
       #- name: Push to SourceForge
         #shell: bash
