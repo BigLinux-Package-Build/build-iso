@@ -13,9 +13,6 @@ jobs:
   prepare-release:
     runs-on: ubuntu-20.04
     steps:
-      - uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
       - id: time
         uses: nanzm/get-time-action@v1.1
         with:
@@ -33,11 +30,7 @@ jobs:
         SCOPE: [full]
         KERNEL: [515-rt]
         
-    steps:
-      - uses: styfle/cancel-workflow-action@0.9.0
-        with:
-          access_token: ${{ github.token }}
-          
+    steps:          
       - id: time
         uses: nanzm/get-time-action@v1.1
         with:
