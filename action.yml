@@ -347,7 +347,6 @@ runs:
         #-w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
         #-o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
         mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
-        -w "https://iso.biglinux.com.br/${{ steps.image-build.outputs.file-path }}" \
         -w "https://osdn.net/projects/biglinux/storage/${{ steps.image-build.outputs.file-path }}" \
         -o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
     
