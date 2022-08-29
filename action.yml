@@ -294,10 +294,10 @@ runs:
         
         if [ "$EXTRAREPO" = "testing" ];then
           #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-          TARGET_ISO_PATH=$EDITION_$(LC_TIME=C date +%Y-%m-%d_%H-%M)_k$KERNEL.iso
+          TARGET_ISO_PATH=$EDITION-$(LC_TIME=C date +%Y-%m-%d_%H-%M)_k$KERNEL.iso
         else
           #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-          TARGET_ISO_PATH=$EDITION_$(LC_TIME=C date +%Y-%m-%d)_k$KERNEL.iso
+          TARGET_ISO_PATH=$EDITION-$(LC_TIME=C date +%Y-%m-%d)_k$KERNEL.iso
         fi
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
         echo "::set-output name=file-path::$TARGET_ISO_PATH"
