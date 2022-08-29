@@ -1,0 +1,145 @@
+name: Biglinux Build ISO Matrix
+on:
+  workflow_dispatch:
+  #schedule:
+    #- cron:  '0 4 * * 5'
+    
+  #repository_dispatch:
+    #types:
+      #- webhook
+      #- '**'
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+      - id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          format: 'YYYYMMDDHHmm'
+    outputs:
+      release_tag: ${{ steps.time.outputs.time }}
+      
+  build-release:
+    runs-on: ubuntu-20.04
+    needs: [prepare-release]
+    strategy:
+      matrix:
+        EDITION: [biglinux]
+        BRANCH: [stable]
+        SCOPE: [full]
+        EXTRAREPO: [testing]
+        #KERNEL: [510, 515, 519]
+        KERNEL: [515]
+
+        
+    steps:
+      - uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+          
+      - id: time
+        uses: nanzm/get-time-action@v1.1
+        with:
+          format: 'YY.MM.DD'
+      
+      - name: Mesa
+        run: |
+          if [ "${{ matrix.kernel }}" -le "510" ];then echo "MESA=amber" >> $GITHUB_ENV
+          elif [ "${{ matrix.kernel }}" -ge "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
+          fi
+          echo ${{ env.MESA }}
+      
+      - name: Build and Upload
+        uses: BigLinux-Package-Build/build-iso@main
+        with:
+          edition: ${{ matrix.edition }}
+          branch: ${{ matrix.branch }}
+          scope: ${{ matrix.scope }}
+          version: ${{ steps.time.outputs.time }}
+          kernel: ${{ matrix.kernel }}
+          mesa: ${{ env.MESA }}
+          extrarepo: ${{ matrix.extrarepo }}
+          code-name: "Ruah"
+          iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
+          release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+          
+      #- name: Prepare Files to Upload
+        #shell: bash
+        #run: |
+          #ls -lh
+          #mkdir iso
+          #for i in *.iso *.torrent *.pkgs *.md5; do
+          #cp $i iso/
+          #done
+      
+      #- name: Push to Repo Nimbus
+        #shell: bash
+        #run: |
+          #echo "## ssh setup"
+          #mkdir -p /home/runner/.ssh
+          #touch /home/runner/.ssh/github_actions
+          #chmod 600 /home/runner/.ssh/github_actions
+          #echo "${{ secrets.PKGBUILD_KEY }}" > /home/runner/.ssh/github_actions
+          #eval `ssh-agent -s`
+          #ssh-add /home/runner/.ssh/github_actions
+          #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+          
+          ##push files
+          #for i in *.iso *.torrent *.pkgs *.md5; do
+          #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
+          #done
+          
+      #- name: Push to SourceForge
+        #shell: bash
+        #run: |
+          #echo "## ssh setup"
+          #mkdir -p /home/runner/.ssh
+          #touch /home/runner/.ssh/id_ed25519
+          #chmod 600 /home/runner/.ssh/id_ed25519
+          #echo "${{ secrets.XIVASTUDIO_SOURCEFORGE_KEY }}" >> /home/runner/.ssh/id_ed25519
+          #ssh-keyscan -t ed25519 ${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }} >> /home/runner/.ssh/known_hosts
+          
+          ##push files
+          ##SourceForge XIVAStudio
+          #ssh xivastudio@shell.sourceforge.net create
+          #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
+      
+      ## Tmate ##
+      #- name: Setup TMATE Session
+        #uses: mxschmitt/action-tmate@v3
+      
+      #- name: Upload OSDN
+        #shell: bash -O extglob {0}
+        #run: |
+          #mkdir -p /home/runner/.ssh
+          #touch /home/runner/.ssh/id_rsa
+          #chmod 600 /home/runner/.ssh/id_rsa
+          #echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+          #ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+          
+          #rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+            
+
+      #- name: Telegram Alert Success
+        #shell: bash
+        #run: |
+          #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          
+      - name: Telegram Alerta Fail
+        if: ${{ failure() || cancelled() }}
+        run: |
+          #echo ${{ github.token }} | gh auth login --with-token
+          #gh release delete ${{ needs.prepare-release.outputs.release_tag }} -y --repo ${{ github.repository }}
+          
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "Falha ao gerar ISO  ${{ github.workflow }} link https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false, "disable_web_page_preview": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+
+      #- name: Prepare and Push to CDN77
+        #shell: bash
+        #run: |
+          #ssh-keyscan -t ecdsa ${{ secrets.CDN77_HOST }} >> /home/runner/.ssh/known_hosts
+          ##sshpass -p "${{ secrets.CDN77_KEY }}" rsync -Ccravzp --progress iso/ ${{ secrets.CDN77_USER }}@${{ secrets.CDN77_HOST }}:${{ secrets.CDN77_ISO_DIR }}
+          ###--delete

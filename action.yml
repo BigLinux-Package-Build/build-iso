@@ -26,7 +26,7 @@ inputs:
   kernel:
     description: 'kernel version'
     required: false
-    default: linux515
+    default: 515
   code-name:
     description: 'manjaro code-name (upstream if not given)'
     required: false
@@ -292,9 +292,13 @@ runs:
       
         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
-        #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-        TARGET_ISO_PATH=$EDITION-$(LC_TIME=C date +%Y-%m-%d)-$KERNEL.iso
-        #-%H-%M
+        if [ "$EXTRAREPO" = "testing" ];then
+          #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
+          TARGET_ISO_PATH=$EDITION-$(LC_TIME=C date +%Y-%m-%d-%H-%M)-$KERNEL.iso
+        else
+          #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
+          TARGET_ISO_PATH=$EDITION-$(LC_TIME=C date +%Y-%m-%d)-$KERNEL.iso
+        fi
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
         echo "::set-output name=file-path::$TARGET_ISO_PATH"
 
