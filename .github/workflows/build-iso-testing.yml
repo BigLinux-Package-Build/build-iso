@@ -69,22 +69,22 @@ jobs:
           cp $i iso/
           done
       
-      - name: Push to Repo Nimbus
-        shell: bash
-        run: |
-          echo "## ssh setup"
-          mkdir -p /home/runner/.ssh
-          touch /home/runner/.ssh/github_actions
-          chmod 600 /home/runner/.ssh/github_actions
-          echo "${{ secrets.PKGBUILD_KEY }}" > /home/runner/.ssh/github_actions
-          eval `ssh-agent -s`
-          ssh-add /home/runner/.ssh/github_actions
-          ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+      #- name: Push to Repo Nimbus
+        #shell: bash
+        #run: |
+          #echo "## ssh setup"
+          #mkdir -p /home/runner/.ssh
+          #touch /home/runner/.ssh/github_actions
+          #chmod 600 /home/runner/.ssh/github_actions
+          #echo "${{ secrets.PKGBUILD_KEY }}" > /home/runner/.ssh/github_actions
+          #eval `ssh-agent -s`
+          #ssh-add /home/runner/.ssh/github_actions
+          #ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
           
-          #push files
-          for i in *.iso *.torrent *.pkgs *.md5; do
-          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
-          done
+          ##push files
+          #for i in *.iso *.torrent *.pkgs *.md5; do
+          #test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
+          #done
           
       #- name: Push to SourceForge
         #shell: bash
@@ -105,22 +105,22 @@ jobs:
       #- name: Setup TMATE Session
         #uses: mxschmitt/action-tmate@v3
       
-      #- name: Upload OSDN
-        #shell: bash -O extglob {0}
-        #run: |
-          #mkdir -p /home/runner/.ssh
-          #touch /home/runner/.ssh/id_rsa
-          #chmod 600 /home/runner/.ssh/id_rsa
-          #echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
-          #ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+      - name: Upload OSDN
+        shell: bash -O extglob {0}
+        run: |
+          mkdir -p /home/runner/.ssh
+          touch /home/runner/.ssh/id_rsa
+          chmod 600 /home/runner/.ssh/id_rsa
+          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+          ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
           
-          #rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+          rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
             
 
-      #- name: Telegram Alert Success
-        #shell: bash
-        #run: |
-          #curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+      - name: Telegram Alert Success
+        shell: bash
+        run: |
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
       - name: Telegram Alerta Fail
         if: ${{ failure() || cancelled() }}
