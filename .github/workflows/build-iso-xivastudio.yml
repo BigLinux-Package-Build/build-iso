@@ -2,7 +2,7 @@ name: Biglinux Build XIVA
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '* 4 * * 5'
+    - cron:  '0 5 * * 5'
 
   repository_dispatch:
     types:
