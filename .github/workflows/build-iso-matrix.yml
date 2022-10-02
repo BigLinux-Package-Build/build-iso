@@ -45,7 +45,7 @@ jobs:
           fi
           echo ${{ env.MESA }}
       
-      - name: Build and Upload
+      - name: Build and Upload GitHub
         uses: BigLinux-Package-Build/build-iso@main
         with:
           edition: ${{ matrix.edition }}
@@ -67,6 +67,24 @@ jobs:
           for i in *.iso *.torrent *.pkgs *.md5; do
           cp $i iso/
           done
+          
+      - name: Verify md5sum
+        shell: bash -O extglob {0}
+        run: |
+          cd iso
+          mkdir mnt
+          find -type f -iname "*.iso" -exec sudo mount -o loop {} mnt \;
+          cd mnt/manjaro/x86_64/
+          for i in *.md5; do 
+            if [ "$(md5sum -c $i | cut -d " " -f2)" != "OK" ]; then
+              echo "deu ruim no md5dum do arquivo $i"
+              exit 1
+            else
+              echo "md5sum do arquivo $i está OK"
+            fi
+          done
+          cd ../../..
+          sudo umount mnt
           
       - name: Prepare and Push to CDN77
         shell: bash -O extglob {0}
