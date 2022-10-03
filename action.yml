@@ -185,12 +185,20 @@ runs:
           sudo install -m0644 archlinux-revoked /usr/share/pacman/keyrings/
         popd
 
-        sudo pacman-key --init
-        sudo pacman-key --populate archlinux manjaro biglinux
+        #sudo pacman-key --init
+        #sudo pacman-key --populate archlinux manjaro biglinux
 
         for gpg_key in ${{ inputs.additional-trusted-gpg }}; do
           sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
         done
+        
+    - id: pull keys
+      shell: bash
+      run: |
+        sudo git clone https://github.com/biglinux/biglinux-key.git
+        sudo mkdir -p /etc/pacman.d/gnupg/
+        sudo cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
+        sudo rm -r biglinux-key
         
     - id: install-arch-install-scripts
       shell: bash
