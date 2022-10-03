@@ -192,7 +192,7 @@ runs:
           sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
         done
         
-    - id: pull keys
+    - id: pull-keys
       shell: bash
       run: |
         sudo git clone https://github.com/biglinux/biglinux-key.git
