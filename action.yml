@@ -384,7 +384,7 @@ runs:
           zip -j -s 1950m ${{ steps.image-build.outputs.file-path }}.zip ${{ steps.image-build.outputs.file-path }}
           
           REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
-          gh release upload ${{ inputs.release-tag }} --repo ${{ github.repository }} --clobber \
+          gh release upload ${release} --repo ${{ github.repository }} --clobber \
             ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
         fi
           
