@@ -3,10 +3,10 @@ name: BigLinux Update ISO
 # Controls when the workflow will run
 on:
   schedule:
-    - cron:  '0 1 * * *'
-    - cron:  '0 7 * * *'
-    - cron:  '0 13 * * *'
-    - cron:  '0 19 * * *'
+    # - cron:  '0 1 * * *'
+    # - cron:  '0 7 * * *'
+    # - cron:  '0 13 * * *'
+    # - cron:  '0 19 * * *'
     - cron:  '0 */2 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
@@ -29,9 +29,10 @@ jobs:
         run: |
           update=$(curl -s https://forum.manjaro.org/c/announcements/stable-updates/12.rss | grep '<title>\[Stable Update\]' | sed 's|.*\[Stable Update] ||g' | cut -f1-3 -d- | head -n1 | sed 's/-//g')
           if [ "$update" -eq "$(date +%Y%m%d)" ]; then 
-          
-          
-          curl -X POST -H "Accept: application/json" -H "Authorization: token ${{ secrets.WEBHOOK_TOKEN }}" --data '{"event_type": "${{ github.repository }}", "client_payload": { "version": "1.2.3"}}' https://api.github.com/repos/BigLinux-Package-Build/build-iso/dispatches
-          
-          
+            cdnrelease=$(curl -q https://iso.biglinux.com.br/ | sed 's/<[^>]*>//g' | awk '{print $1}' | grep -vE "md5|pkgs|torrent" | grep biglinux | cut -d "_" -f2 | sed 's/-//g' | uniq | sort | tail -n1)
+            if [ "$(date +%Y%m%d)" != "$cdnrelease" ]; then
+              curl -X POST -H "Accept: application/json" -H "Authorization: token ${{ secrets.WEBHOOK_TOKEN }}" --data '{"event_type": "${{ github.repository }}", "client_payload": { "version": "1.2.3"}}' https://api.github.com/repos/BigLinux-Package-Build/build-iso/dispatches
+              else
+                echo "$cdnrelease" é igual a "$(date +%Y%m%d)"
+            fi
           fi
