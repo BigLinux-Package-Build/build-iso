@@ -28,7 +28,7 @@ jobs:
         EDITION: [xivastudio]
         BRANCH: [stable]
         SCOPE: [full]
-        KERNEL: [510, 515]
+        KERNEL: [510, 515, 519]
         #515-rt
         
     steps:          
