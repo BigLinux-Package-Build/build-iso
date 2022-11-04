@@ -1,8 +1,8 @@
 name: Biglinux Build ISO UAI
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 4 * * 5'
+  # schedule:
+    # - cron:  '0 4 * * 5'
     
   repository_dispatch:
     types:
