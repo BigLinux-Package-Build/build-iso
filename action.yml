@@ -290,7 +290,7 @@ runs:
         cd ../..
         
         mkdir -p ~/.config/manjaro-tools/
-        echo "run_dir=$PWD/iso-profiles/community/$EDITION" > ~/.config/manjaro-tools/iso-profiles.conf
+        echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
         
         echo $KERNEL
         echo $EDITION
