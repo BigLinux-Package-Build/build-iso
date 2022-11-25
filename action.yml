@@ -300,7 +300,7 @@ runs:
         echo $SCOPE
         echo $MESA
         
-        ls -lha /home/runner/work/build-iso/build-iso/iso-profiles/biglinux-make-iso-profiles/biglinux/
+        grep -Ri biglinux-make-iso-profiles
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
