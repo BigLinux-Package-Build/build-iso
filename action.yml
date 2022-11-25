@@ -295,7 +295,8 @@ runs:
         echo $SCOPE
         echo $MESA
         
-        ls -lha
+        
+        echo "sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}"
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
