@@ -292,11 +292,15 @@ runs:
         mkdir -p ~/.config/manjaro-tools/
         echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
         
+        cat ~/.config/manjaro-tools/iso-profiles.conf
+        
         echo $KERNEL
         echo $EDITION
         echo $BRANCH
         echo $SCOPE
         echo $MESA
+        
+        ls -lha /home/runner/work/build-iso/build-iso/iso-profiles/biglinux-make-iso-profiles/biglinux/
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
