@@ -289,37 +289,35 @@ runs:
         sudo bash -x make-iso-profiles  ci/cd $MESA $EXTRAREPO $EDITION
         cd ../..
         
+        sudo rm -r iso-profiles/biglinux-make-iso-profiles
+        
         echo $KERNEL
         echo $EDITION
         echo $BRANCH
         echo $SCOPE
         echo $MESA
         
-    # Tmate ##
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3    
+        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
+
+        sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
+      
+        OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
-#         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
-# 
-#         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
-#       
-#         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
-#         
-#         if [ "$EXTRAREPO" = "testing" ];then
-#           #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-#           TARGET_ISO_PATH=${EDITION}_$(LC_TIME=C date +%Y-%m-%d_%H-%M)_k$KERNEL.iso
-#         else
-#           #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-#           TARGET_ISO_PATH=${EDITION}_$(LC_TIME=C date +%Y-%m-%d)_k$KERNEL.iso
-#         fi
-#         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
-#         echo "::set-output name=file-path::$TARGET_ISO_PATH"
-# 
-#         FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
-#         sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
-#         
-#         ls -lh
-#         echo ${{ steps.image-build.outputs.file-path }}
+        if [ "$EXTRAREPO" = "testing" ];then
+          #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
+          TARGET_ISO_PATH=${EDITION}_$(LC_TIME=C date +%Y-%m-%d_%H-%M)_k$KERNEL.iso
+        else
+          #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
+          TARGET_ISO_PATH=${EDITION}_$(LC_TIME=C date +%Y-%m-%d)_k$KERNEL.iso
+        fi
+        sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
+        echo "::set-output name=file-path::$TARGET_ISO_PATH"
+
+        FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
+        sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
+        
+        ls -lh
+        echo ${{ steps.image-build.outputs.file-path }}
         
     - id: hash
       shell: bash
