@@ -295,6 +295,8 @@ runs:
         echo $SCOPE
         echo $MESA
         
+        ls -lha
+        
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
