@@ -99,8 +99,9 @@ runs:
     - id: install-build-dependencies
       shell: bash
       run: |
-        sudo apt-get update
-        sudo apt-get install \
+        sudo apt update
+        sudo apt dist-upgrade
+        sudo apt install \
           gdisk \
           zip \
           systemd-container \
