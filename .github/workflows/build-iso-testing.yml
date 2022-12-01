@@ -132,18 +132,16 @@ jobs:
         run: |
           ls -lh
           
+          release=$(find . -name *.iso | cut -d "/" -f2)
+          
           # iso is too big - creating a split-zip
-          zip -j -s 1950m ${{ steps.image-build.outputs.file-path }}.zip ${{ steps.image-build.outputs.file-path }}
+          zip -j -0 -s 1950m ${release}.zip ${release}.iso
           
           ls -lh
           
           echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
           # token=${{ secrets.TOKEN_RELEASE }}
           # repo=$(echo ${{ github.event.client_payload.url }} | sed 's|https://github.com/||')
-          
-          release=$(find . -name *.iso | cut -d "/" -f2)
-          
-          ls -lh
           
           gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
           
