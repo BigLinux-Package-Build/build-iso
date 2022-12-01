@@ -129,23 +129,21 @@ jobs:
         run: |
           ls -lh
           
-          release=$(find . -name *.iso | cut -d "/" -f2)
+          release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
           
           # iso is too big - creating a split-zip
-          zip -j -0 -s 1950m ${release}.zip ${release}
+          zip -j -0 -s 1950m ${release}.zip ${release}.iso
           
           ls -lh
           
-          # echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
-          # token=${{ secrets.TOKEN_RELEASE }}
-          # repo=$(echo ${{ github.event.client_payload.url }} | sed 's|https://github.com/||')
+          echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
           
-          # gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
+          gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
           
-          # REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
-          # gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber \
-          # ./${release}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
-      
+          for i in *.z* *.md5 *.pkgs; do 
+            gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber $i
+          done
+          
       # Tmate ##
       - name: Setup TMATE Session
         uses: mxschmitt/action-tmate@v3
