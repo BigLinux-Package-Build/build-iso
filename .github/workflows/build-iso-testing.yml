@@ -101,9 +101,6 @@ jobs:
           #ssh xivastudio@shell.sourceforge.net create
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
       
-      ## Tmate ##
-      #- name: Setup TMATE Session
-        #uses: mxschmitt/action-tmate@v3
       
       # - name: Upload OSDN
         # shell: bash -O extglob {0}
@@ -139,15 +136,19 @@ jobs:
           
           ls -lh
           
-          echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
+          # echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
           # token=${{ secrets.TOKEN_RELEASE }}
           # repo=$(echo ${{ github.event.client_payload.url }} | sed 's|https://github.com/||')
           
-          gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
+          # gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
           
-          REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
-          gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber \
-          ./${release}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
+          # REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
+          # gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber \
+          # ./${release}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
+      
+      # Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
             
       - name: Telegram Alert Success
         shell: bash
