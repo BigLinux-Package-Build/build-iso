@@ -46,7 +46,7 @@ jobs:
           fi
           echo ${{ env.MESA }}
       
-      - name: Build and Upload
+      - name: Build
         uses: BigLinux-Package-Build/build-iso@main
         with:
           edition: ${{ matrix.edition }}
@@ -60,14 +60,14 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
-      - name: Prepare Files to Upload
-        shell: bash
-        run: |
-          ls -lh
-          mkdir iso
-          for i in *.iso *.torrent *.pkgs *.md5; do
-          cp $i iso/
-          done
+      # - name: Prepare Files to Upload
+        # shell: bash
+        # run: |
+          # ls -lh
+          # mkdir iso
+          # for i in *.iso *.torrent *.pkgs *.md5; do
+          # cp $i iso/
+          # done
       
       #- name: Push to Repo Nimbus
         #shell: bash
@@ -123,7 +123,7 @@ jobs:
           mkdir -p /home/runner/.ssh
           touch /home/runner/.ssh/github_actions
           chmod 600 /home/runner/.ssh/github_actions
-          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+          # ssh-agent -a /tmp/ssh_agent.sock > /dev/null
           # echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
           # mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
       

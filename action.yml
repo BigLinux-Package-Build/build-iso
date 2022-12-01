@@ -364,6 +364,8 @@ runs:
     
     - id: upload-github-release
       shell: bash -O extglob {0}
+      env:
+        EXTRAREPO: ${{ inputs.extrarepo }}
       run: |
         # if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
         # if [ -z "${{ inputs.release-tag }}" ]; then 
@@ -392,6 +394,8 @@ runs:
             gh release upload ${release} --repo ${{ github.repository }} --clobber \
               ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
           fi
+        else
+          echo "ISO testing subir em outro repo"
         fi
           
     #- name: upload-sourceforge
