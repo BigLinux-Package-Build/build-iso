@@ -144,9 +144,9 @@ jobs:
             gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber $i
           done
           
-      # Tmate ##
-      - name: Setup TMATE Session
-        uses: mxschmitt/action-tmate@v3
+      # # Tmate ##
+      # - name: Setup TMATE Session
+      #   uses: mxschmitt/action-tmate@v3
             
       - name: Telegram Alert Success
         shell: bash
