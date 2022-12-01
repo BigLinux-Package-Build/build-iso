@@ -135,7 +135,7 @@ jobs:
           release=$(find . -name *.iso | cut -d "/" -f2)
           
           # iso is too big - creating a split-zip
-          zip -j -0 -s 1950m ${release}.zip ${release}.iso
+          zip -j -0 -s 1950m ${release}.zip ${release}
           
           ls -lh
           
