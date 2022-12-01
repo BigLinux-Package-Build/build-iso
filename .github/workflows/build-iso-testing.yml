@@ -105,18 +105,52 @@ jobs:
       #- name: Setup TMATE Session
         #uses: mxschmitt/action-tmate@v3
       
-      - name: Upload OSDN
+      # - name: Upload OSDN
+        # shell: bash -O extglob {0}
+        # run: |
+          # mkdir -p /home/runner/.ssh
+          # touch /home/runner/.ssh/id_rsa
+          # chmod 600 /home/runner/.ssh/id_rsa
+          # echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+          # ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+          
+          # rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+      
+      - name: upload-prepare
         shell: bash -O extglob {0}
         run: |
+          echo "## ssh setup"
           mkdir -p /home/runner/.ssh
-          touch /home/runner/.ssh/id_rsa
-          chmod 600 /home/runner/.ssh/id_rsa
-          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
-          ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+          touch /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
+          ssh-agent -a /tmp/ssh_agent.sock > /dev/null
+          # echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
+          # mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
+      
+      - name: Publish Package on GitHub
+        shell: bash
+        run: |
+          ls -lh
           
-          rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+          # iso is too big - creating a split-zip
+          zip -j -s 1950m ${{ steps.image-build.outputs.file-path }}.zip ${{ steps.image-build.outputs.file-path }}
+          
+          ls -lh
+          
+          echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
+          # token=${{ secrets.TOKEN_RELEASE }}
+          # repo=$(echo ${{ github.event.client_payload.url }} | sed 's|https://github.com/||')
+          
+          release=$(find . -name *.iso | cut -d "/" -f2)
+          
+          ls -lh
+          
+          gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
+          
+          REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
+          gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber \
+          ./${release}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
             
-
       - name: Telegram Alert Success
         shell: bash
         run: |
