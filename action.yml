@@ -343,6 +343,7 @@ runs:
     - id: upload-prepare
       shell: bash -O extglob {0}
       run: |
+        if [ "$EXTRAREPO" != "testing" ];then
         echo "## ssh setup"
         mkdir -p /home/runner/.ssh
         touch /home/runner/.ssh/github_actions
@@ -350,6 +351,7 @@ runs:
         ssh-agent -a /tmp/ssh_agent.sock > /dev/null
         echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
         mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
+        fi
         
     - id: Torrent
       shell: bash -O extglob {0}
@@ -370,6 +372,8 @@ runs:
         #   echo "## no release tag given"
         #   exit 0
         # fi
+        
+        if [ "$EXTRAREPO" != "testing" ];then
         echo "## github upload"
         release=$(echo ${{ steps.image-build.outputs.file-path }} | sed 's/_k.*//')
 
@@ -389,6 +393,7 @@ runs:
           REMOTE_FILES=$(find . -maxdepth 1 -name "*.z*" -exec basename {} \; | xargs -I{} echo "-w \"${GITHUB_LINK}/{}\"")
           gh release upload ${release} --repo ${{ github.repository }} --clobber \
             ./${{ steps.image-build.outputs.file-path }}+(.z*|.sha*|.pkgs|.sig|.torrent|.md5)
+        fi
         fi
           
     #- name: upload-sourceforge
