@@ -144,6 +144,18 @@ jobs:
             gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber $i
           done
           
+      - name: Upload Release_Tag
+        shell: bash
+        run: |
+          git clone git@github.com:BigLinux-Package-Build/big-releases.git
+          cd big-releases
+          echo ${{ needs.prepare-release.outputs.release_tag }} >> testing
+          git add --all
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "new release"
+          git push
+          
       # # Tmate ##
       # - name: Setup TMATE Session
       #   uses: mxschmitt/action-tmate@v3
