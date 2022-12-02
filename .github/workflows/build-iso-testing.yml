@@ -46,19 +46,19 @@ jobs:
           fi
           echo ${{ env.MESA }}
       
-      # - name: Build
-      #   uses: BigLinux-Package-Build/build-iso@main
-      #   with:
-      #     edition: ${{ matrix.edition }}
-      #     branch: ${{ matrix.branch }}
-      #     scope: ${{ matrix.scope }}
-      #     version: ${{ steps.time.outputs.time }}
-      #     kernel: ${{ matrix.kernel }}
-      #     mesa: ${{ env.MESA }}
-      #     extrarepo: ${{ matrix.extrarepo }}
-      #     code-name: "Ruah"
-      #     iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
-      #     release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+      # # - name: Build
+      # #   uses: BigLinux-Package-Build/build-iso@main
+      # #   with:
+      # #     edition: ${{ matrix.edition }}
+      # #     branch: ${{ matrix.branch }}
+      # #     scope: ${{ matrix.scope }}
+      # #     version: ${{ steps.time.outputs.time }}
+      # #     kernel: ${{ matrix.kernel }}
+      # #     mesa: ${{ env.MESA }}
+      # #     extrarepo: ${{ matrix.extrarepo }}
+      # #     code-name: "Ruah"
+      # #     iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
+      # #     release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
       # - name: Prepare Files to Upload
         # shell: bash
@@ -124,25 +124,19 @@ jobs:
           # echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
           # mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
       
-      - name: Publish Package on GitHub
-        shell: bash
-        run: |
-          ls -lh
-          
-          release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
-          
-          # iso is too big - creating a split-zip
-          zip -j -0 -s 1950m ${release}.zip ${release}.iso
-          
-          ls -lh
-          
-          echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
-          
-          gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
-          
-          for i in *.z* *.md5 *.pkgs; do 
-            gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber $i
-          done
+      # # - name: Publish Package on GitHub
+      # #   shell: bash
+      # #   run: |
+      # #     ls -lh
+      # #     release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
+      # #     # iso is too big - creating a split-zip
+      # #     zip -j -0 -s 1950m ${release}.zip ${release}.iso
+      # #     ls -lh
+      # #     echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
+      # #     gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
+      # #     for i in *.z* *.md5 *.pkgs; do 
+      # #       gh release upload ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --clobber $i
+      # #     done
           
       - name: Upload Release_Tag
         shell: bash
