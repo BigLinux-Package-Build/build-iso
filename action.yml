@@ -288,8 +288,8 @@ runs:
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
         sudo bash -x make-iso-profiles  ci/cd $MESA $EXTRAREPO $EDITION
-        echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a $EDITION/etc/big-release
-        echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a $EDITION/etc/big-release
+        echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a $EDITION/root-overlay/etc/big-release
+        echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a $EDITION/root-overlay/etc/big-release
         cd ../..
         
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
