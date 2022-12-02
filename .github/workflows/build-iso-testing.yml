@@ -141,7 +141,7 @@ jobs:
       - name: Upload Release_Tag
         shell: bash
         run: |
-          echo ${{ secrets.SSH_UPLOAD }} > ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_UPLOAD }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           git clone git@github.com:BigLinux-Package-Build/big-releases.git
           cd big-releases
