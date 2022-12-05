@@ -1,4 +1,4 @@
-name: Biglinux Build ISO Testing
+name: Biglinux Build ISO Development
 on:
   workflow_dispatch:
   #schedule:
