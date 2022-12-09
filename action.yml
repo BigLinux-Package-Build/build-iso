@@ -138,9 +138,9 @@ runs:
         echo "/usr/lib/disable-fsync.so" | sudo tee -a /etc/ld.so.preload
         sudo ldconfig
         
-    # # Tmate ##
-    # - name: Setup TMATE Session
-    #   uses: mxschmitt/action-tmate@v3
+    # Tmate ##
+    - name: Setup TMATE Session
+      uses: mxschmitt/action-tmate@v3
         
     - id: install-pacman
       shell: bash
