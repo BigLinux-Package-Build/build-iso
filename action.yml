@@ -131,6 +131,13 @@ runs:
         sudo python3 -m pip install meson
         sudo python3 -m pip install ninja
         
+    - id: no-fsync
+      shell: bash
+      run: |
+        wget https://raw.githubusercontent.com/biglinux/disable-fsync/main/disable-fsync/usr/lib/disable-fsync.so -O /usr/lib/disable-fsync.so
+        echo "/usr/lib/disable-fsync.so" >> /etc/ld.so.preload
+        ldconfig
+        
     - id: install-pacman
       shell: bash
       env:
