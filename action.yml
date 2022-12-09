@@ -106,10 +106,10 @@ runs:
         # echo "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu bionic main" | sudo tee /etc/apt/sources.list.d/apt-fast.list
         # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B
         sudo apt update
-        sudo apt dist-upgrade
-        sudo apt install \
-        # sudo apt-fast dist-upgrade -y
-        # sudo apt-fast install -y \
+        # sudo apt dist-upgrade
+        # sudo apt install \
+        sudo apt-fast dist-upgrade -y
+        sudo apt-fast install -y \
           gdisk \
           zip \
           systemd-container \
