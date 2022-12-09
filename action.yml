@@ -135,8 +135,8 @@ runs:
       shell: bash
       run: |
         wget https://raw.githubusercontent.com/biglinux/disable-fsync/main/disable-fsync/usr/lib/disable-fsync.so -O /usr/lib/disable-fsync.so
-        echo "/usr/lib/disable-fsync.so" >> /etc/ld.so.preload
-        ldconfig
+        echo "/usr/lib/disable-fsync.so" | sudo tee -a /etc/ld.so.preload
+        sudo ldconfig
         
     - id: install-pacman
       shell: bash
