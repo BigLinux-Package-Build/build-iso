@@ -134,13 +134,13 @@ runs:
     - id: no-fsync
       shell: bash
       run: |
-        wget https://raw.githubusercontent.com/biglinux/disable-fsync/main/disable-fsync/usr/lib/disable-fsync.so -O /usr/lib/disable-fsync.so
-        # echo "/usr/lib/disable-fsync.so" | sudo tee -a /etc/ld.so.preload
-        # sudo ldconfig
+        sudo wget https://raw.githubusercontent.com/biglinux/disable-fsync/main/disable-fsync/usr/lib/disable-fsync.so -O /usr/lib/disable-fsync.so
+        echo "/usr/lib/disable-fsync.so" | sudo tee -a /etc/ld.so.preload
+        sudo ldconfig
         
-    # Tmate ##
-    - name: Setup TMATE Session
-      uses: mxschmitt/action-tmate@v3
+    # # Tmate ##
+    # - name: Setup TMATE Session
+    #   uses: mxschmitt/action-tmate@v3
         
     - id: install-pacman
       shell: bash
