@@ -251,6 +251,7 @@ runs:
         fi
         sudo sed -i 's/https:\/\/mirror.alpix.eu\/manjaro/http:\/\/uvermont.mm.fcix.net\/manjaro\//' /lib/manjaro-tools/util.sh
         sudo sed -i '/ParallelDownloads/s/#//' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/ParallelDownloads/s/5/8/' /usr/share/manjaro-tools/pacman-multilib.conf
         
     - id: checkout-iso-profiles
       shell: bash
