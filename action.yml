@@ -103,7 +103,7 @@ runs:
     - id: install-build-dependencies
       shell: bash
       run: |
-        # echo "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu bionic main" | sudo tee /etc/apt/sources.list.d/apt-fast.list
+        # echo "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu jammy main" | sudo tee /etc/apt/sources.list.d/apt-fast.list
         # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B
         sudo apt update
         # sudo apt dist-upgrade
@@ -242,7 +242,7 @@ runs:
     - id: install-mkinitcpio
       shell: bash
       env:
-        VERSION: "30"
+        VERSION: "34"
       run: |
         # sudo wget https://gitlab.archlinux.org/mkinitcpio/mkinitcpio/-/archive/v${VERSION}/mkinitcpio-v${VERSION}.tar.gz
         sudo wget https://github.com/BigLinux-Package-Build/build-iso/raw/main/mkinitcpio/mkinitcpio-v${VERSION}.tar.gz
