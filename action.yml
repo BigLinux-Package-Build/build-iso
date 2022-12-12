@@ -314,6 +314,8 @@ runs:
         echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         
+        echo iso-profiles/community/$EDITION/Root-add
+        
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
         
         echo $KERNEL
