@@ -1,4 +1,4 @@
-name: Biglinux Build ISO Development
+name: Biglinux Build ISO Development XanMod
 on:
   workflow_dispatch:
   #schedule:
@@ -30,7 +30,7 @@ jobs:
         SCOPE: [full]
         EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
-        KERNEL: [515]
+        KERNEL: [-xanmod]
 
         
     steps:
