@@ -2,7 +2,7 @@ name: Biglinux Build ISO Matrix
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 4 * * 5'
+    - cron:  '0 6 * * 5'
     
   repository_dispatch:
     types:
