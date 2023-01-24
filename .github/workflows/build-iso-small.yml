@@ -28,7 +28,7 @@ jobs:
         EDITION: [big-small]
         BRANCH: [stable]
         SCOPE: [full]
-        #EXTRAREPO: []
+        EXTRAREPO: [testing]
         # KERNEL: [510, 515, 60]
         KERNEL: [515]
         
