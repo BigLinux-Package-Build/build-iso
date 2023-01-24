@@ -1,13 +1,13 @@
 name: Biglinux Build ISO Big-Small
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '0 6 * * 5'
+  # schedule:
+  #   - cron:  '0 6 * * 5'
     
-  repository_dispatch:
-    types:
-      - webhook
-      - '**'
+  # repository_dispatch:
+  #   types:
+  #     - webhook
+  #     - '**'
 
 jobs:
   prepare-release:
