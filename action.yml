@@ -268,7 +268,7 @@ runs:
           echo "## adding repo [${CUSTOM_REPO}]"
           sudo sed -i -e "s/\[core\]/\[${CUSTOM_REPO}\]\nSigLevel = PackageRequired\nInclude = \/etc\/pacman\.d\/mirrorlist\n\n\[core\]/" /usr/share/manjaro-tools/pacman-multilib.conf
         fi
-        sudo sed -i 's/https:\/\/mirror.alpix.eu\/manjaro/http:\/\/uvermont.mm.fcix.net\/manjaro\//' /lib/manjaro-tools/util.sh
+        sudo sed -i 's/https:\/\/mirror.alpix.eu\/manjaro/https:\/\/mnvoip.mm.fcix.net\/manjaro\//' /lib/manjaro-tools/util.sh
         sudo sed -i '/ParallelDownloads/s/#//' /usr/share/manjaro-tools/pacman-multilib.conf
         sudo sed -i '/ParallelDownloads/s/5/8/' /usr/share/manjaro-tools/pacman-multilib.conf
         
