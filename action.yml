@@ -43,7 +43,7 @@ inputs:
   build-mirror:
     description: 'specific build mirror to use'
     required: false
-    default: https://mirror.moson.org/manjaro
+    default: https://mnvoip.mm.fcix.net/manjaro
   gpg-secret-key-base64:
     description: 'base64 encoded gpg secret key (without a passphrase) to sign the zip (if set)'
     required: false
@@ -172,6 +172,7 @@ runs:
           sudo install -m644 makepkg.conf /etc/
           sudo mkdir -p /etc/pacman.d
           sudo touch /etc/pacman.d/mirrorlist
+          echo 'Server = ${{ inputs.build-mirror }}/stable/$repo/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
         popd
         
     - id: install-keyrings
@@ -304,7 +305,7 @@ runs:
         sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=manjaro|g' /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${VERSION:-$DISTRIB_RELEASE}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
-        sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
+#         sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
         
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
@@ -331,11 +332,13 @@ runs:
       
         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
+        #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
         if [ "$EXTRAREPO" = "testing" ];then
-          #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
           TARGET_ISO_PATH=${EDITION}_DEVELOPMENT_${{ inputs.release-tag }}_k$KERNEL.iso
+        if [ "$KERNEL" = "-latest" ];then
+          kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
+          TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$kernelVer.iso
         else
-          #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
           TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$KERNEL.iso
         fi
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
