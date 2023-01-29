@@ -305,7 +305,7 @@ runs:
         sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=manjaro|g' /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${VERSION:-$DISTRIB_RELEASE}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
-#         sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
+        #sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
         
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
