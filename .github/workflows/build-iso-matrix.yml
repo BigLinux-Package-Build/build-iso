@@ -30,7 +30,7 @@ jobs:
         SCOPE: [full]
         #EXTRAREPO: []
         # KERNEL: [510, 515, 60]
-        KERNEL: [-latest]
+        KERNEL: [510, 515, -latest]
         
     steps:
       - id: time
