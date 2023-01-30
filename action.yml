@@ -210,6 +210,7 @@ runs:
           sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
         done
         
+        
     - id: pull-keys
       shell: bash
       run: |
@@ -217,6 +218,7 @@ runs:
         sudo mkdir -p /etc/pacman.d/gnupg/
         sudo cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
         sudo rm -r biglinux-key
+        sudo pacman -Sy
         
     - id: install-arch-install-scripts
       shell: bash
@@ -306,6 +308,8 @@ runs:
         sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${VERSION:-$DISTRIB_RELEASE}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         #sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
+        #troca busca de kerneis para pegar qualquer kernel
+        sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
         
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
@@ -314,6 +318,11 @@ runs:
         cd ../..
         echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
+        if [ "$KERNEL" = "latest" ];then
+          kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
+          echo "linux-latest"  | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
+          KERNEL=$kernelVer
+        fi
         
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
         
@@ -322,9 +331,6 @@ runs:
         echo $BRANCH
         echo $SCOPE
         echo $MESA
-        
-        #troca busca de kerneis para pegar qualquer kernel
-        sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $BRANCH -k linux$KERNEL ${OFFICE:+-o}
 
@@ -335,10 +341,8 @@ runs:
         #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
         if [ "$EXTRAREPO" = "testing" ];then
           TARGET_ISO_PATH=${EDITION}_DEVELOPMENT_${{ inputs.release-tag }}_k$KERNEL.iso
-        elif [ "$KERNEL" = "-latest" ];then
-          sudo pacman -Sy
-          kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
-          TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$kernelVer.iso
+        #elif [ "$KERNEL" = "latest" ];then
+        #  TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$kernelVer.iso
         else
           TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$KERNEL.iso
         fi
