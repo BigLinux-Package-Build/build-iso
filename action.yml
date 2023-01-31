@@ -326,6 +326,8 @@ runs:
         
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
         
+        cat iso-profiles/community/$EDITION/profile.conf
+        
         echo $KERNEL
         echo $EDITION
         echo $BRANCH
