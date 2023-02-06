@@ -113,28 +113,28 @@ jobs:
           test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
           done
           
-      - name: Upload OSDN
-        shell: bash -O extglob {0}
-        #env:
-          #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p /home/runner/.ssh
-          touch /home/runner/.ssh/id_rsa
-          chmod 600 /home/runner/.ssh/id_rsa
-          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
-          #ssh-add /home/runner/.ssh/github_actions
-          ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
-        
-          ### create target dir
-          #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
-            #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/m/ma/${{ inputs.osdn-project }}/
-
-          #OSDN_GROUP=$(echo ${{ inputs.osdn-project }} | cut -c 1)/$(echo ${{ inputs.osdn-project }} | cut -c 1-2)
-
-          #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
-            #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/
-
-          rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+#       - name: Upload OSDN
+#         shell: bash -O extglob {0}
+#         #env:
+#           #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+#         run: |
+#           mkdir -p /home/runner/.ssh
+#           touch /home/runner/.ssh/id_rsa
+#           chmod 600 /home/runner/.ssh/id_rsa
+#           echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+#           #ssh-add /home/runner/.ssh/github_actions
+#           ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+#         
+#           ### create target dir
+#           #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
+#             #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/m/ma/${{ inputs.osdn-project }}/
+# 
+#           #OSDN_GROUP=$(echo ${{ inputs.osdn-project }} | cut -c 1)/$(echo ${{ inputs.osdn-project }} | cut -c 1-2)
+# 
+#           #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
+#             #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/
+# 
+#           rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
             
       #- name: Push to SourceForge
         #shell: bash -O extglob {0}
