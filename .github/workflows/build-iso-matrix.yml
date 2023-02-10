@@ -41,8 +41,8 @@ jobs:
       - name: Mesa
         shell: bash -O extglob {0}
         run: |
-          if [ "${{ matrix.kernel }}" -eq "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-          elif [ "${{ matrix.kernel }}" -eq "latest" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
+          if [ "${{ matrix.kernel }}" = "510" ];then echo "MESA=amber" >> $GITHUB_ENV
+          elif [ "${{ matrix.kernel }}" = "latest" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
           fi
           echo ${{ env.MESA }}
           echo "${{ env.MESA }}"
