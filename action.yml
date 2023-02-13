@@ -146,7 +146,6 @@ runs:
         echo "/usr/lib/disable-fsync.so" | sudo tee -a /etc/ld.so.preload
         sudo ldconfig
         
-        
     - id: install-pacman
       shell: bash
       env:
@@ -213,7 +212,6 @@ runs:
         for gpg_key in ${{ inputs.additional-trusted-gpg }}; do
           sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
         done
-        
         
     - id: pull-keys
       shell: bash
@@ -286,9 +284,9 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
             
-    # Tmate ##
-    - name: Setup TMATE Session
-      uses: mxschmitt/action-tmate@v3
+    # ## Tmate ##
+    # - name: Setup TMATE Session
+    #   uses: mxschmitt/action-tmate@v3
     
     - id: image-build
       shell: bash
@@ -318,6 +316,11 @@ runs:
         #sudo sed -i -e "s|build_mirror='https://manjaro.moson.eu'|build_mirror=\'${BUILD_MIRROR}\'|g" /usr/lib/manjaro-tools/util.sh
         #troca busca de kerneis para pegar qualquer kernel
         sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
+        #add repo biglinux-update-stable
+        sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
         
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
