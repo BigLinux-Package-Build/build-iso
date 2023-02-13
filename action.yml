@@ -286,6 +286,10 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
             
+    # Tmate ##
+    - name: Setup TMATE Session
+      uses: mxschmitt/action-tmate@v3
+    
     - id: image-build
       shell: bash
       env:
@@ -359,9 +363,6 @@ runs:
         ls -lh
         echo ${{ steps.image-build.outputs.file-path }}
         
-    # # Tmate ##
-    # - name: Setup TMATE Session
-    #   uses: mxschmitt/action-tmate@v3
       
     - id: hash
       shell: bash
