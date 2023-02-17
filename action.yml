@@ -108,7 +108,7 @@ runs:
         sudo apt update
         # sudo apt dist-upgrade
         # sudo apt install \
-        sudo apt-fast dist-upgrade -y
+        # sudo apt-fast dist-upgrade -y
         sudo apt-fast install -y \
           gdisk \
           zip \
