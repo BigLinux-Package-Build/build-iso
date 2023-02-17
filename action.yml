@@ -328,6 +328,9 @@ runs:
         sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
         sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
         
+        #adicionar memtest-efi
+        sed -i '/memtest/{p;s/.*/    cp $1\/boot\/memtest86+\/memtest.efi $2\/memtest-efi/;}' /usr/lib/manjaro-tools/util-iso-boot.sh
+        
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         cd iso-profiles/biglinux-make-iso-profiles
