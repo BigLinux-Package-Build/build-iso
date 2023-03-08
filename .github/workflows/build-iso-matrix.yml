@@ -26,7 +26,8 @@ jobs:
     strategy:
       matrix:
         EDITION: [biglinux]
-        BRANCH: [stable]
+        MANJAROBRANCH: [stable]
+        BIGBRANCH: [stable]
         SCOPE: [full]
         #EXTRAREPO: []
         # KERNEL: [510, 515, 60]
@@ -53,13 +54,14 @@ jobs:
         uses: BigLinux-Package-Build/build-iso@main
         with:
           edition: ${{ matrix.edition }}
-          branch: ${{ matrix.branch }}
-          scope: ${{ matrix.scope }}
+          manjarobranch: ${{ matrix.manjarobranch }}
+          bigbranch: ${{ matrix.bigbranch }}
+          # scope: ${{ matrix.scope }}
           version: ${{ steps.time.outputs.time }}
           kernel: ${{ matrix.kernel }}
           mesa: ${{ env.MESA }}
           extrarepo: ${{ matrix.extrarepo }}
-          code-name: "Sikaris"
+          # code-name: "Sikaris"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
