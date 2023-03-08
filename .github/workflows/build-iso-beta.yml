@@ -1,4 +1,4 @@
-name: Biglinux Build ISO Development Stable
+name: Biglinux Build ISO Beta
 on:
   workflow_dispatch:
   #schedule:
