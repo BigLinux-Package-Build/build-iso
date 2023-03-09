@@ -411,6 +411,10 @@ runs:
         else
           sudo sed -i 's|256K|1024K|g' /usr/lib/manjaro-tools/util-iso.sh
         fi
+        
+        #select folder with isoprofiles
+        mkdir -p ~/.config/manjaro-tools/
+        echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
     
     - id: checkout-iso-profiles
       shell: bash
@@ -439,9 +443,9 @@ runs:
       run: |      
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
-        cd iso-profiles/biglinux-make-iso-profiles
-        sudo bash -x make-iso-profiles ci/cd $MESA $EXTRAREPO $EDITION
-        cd ../..
+        # cd iso-profiles/biglinux-make-iso-profiles
+        # sudo bash -x make-iso-profiles ci/cd $MESA $EXTRAREPO $EDITION
+        # cd ../..
         
         #Build Release and Unix Time
         echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
