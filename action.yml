@@ -414,6 +414,7 @@ runs:
         
         #select folder with isoprofiles
         mkdir -p ~/.config/manjaro-tools/
+        cd ..
         echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
     
     - id: checkout-iso-profiles
