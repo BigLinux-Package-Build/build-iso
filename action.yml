@@ -426,9 +426,10 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
             
-    ## Tmate ##
-    - name: Setup TMATE Session
-      uses: mxschmitt/action-tmate@v3
+    # ## Tmate ##
+    # - name: Setup TMATE Session
+    #   uses: mxschmitt/action-tmate@v3
+    #   # if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       
     - id: image-build
       shell: bash
