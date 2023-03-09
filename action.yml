@@ -507,8 +507,8 @@ runs:
         echo $BIGBRANCH
         echo $MESA
         
-        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k ${KERNEL} ${OFFICE:+-o}
-        #linux
+        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
+        
         
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
