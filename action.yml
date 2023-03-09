@@ -266,37 +266,41 @@ runs:
       env:
         CUSTOM_REPO: ${{ inputs.custom-repo }}
       run: |
+        #make majaro-tools
         sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-tools.git
         cd manjaro-tools
         sudo make SYSCONFDIR=/etc PREFIX=/usr
         sudo make SYSCONFDIR=/etc PREFIX=/usr install_base
         sudo make SYSCONFDIR=/etc PREFIX=/usr install_yaml
         sudo make SYSCONFDIR=/etc PREFIX=/usr install_iso
+        
+        #add custom repo
         if [ ! -z ${CUSTOM_REPO} ]; then
           echo "## adding repo [${CUSTOM_REPO}]"
           sudo sed -i -e "s/\[core\]/\[${CUSTOM_REPO}\]\nSigLevel = PackageRequired\nInclude = \/etc\/pacman\.d\/mirrorlist\n\n\[core\]/" /usr/share/manjaro-tools/pacman-multilib.conf
         fi
-        # sudo sed -i 's/https:\/\/mirror.alpix.eu\/manjaro/https:\/\/mnvoip.mm.fcix.net\/manjaro\//' /lib/manjaro-tools/util.sh
+        
+        #change mirror
         sudo sed -i "s|https://mirror.alpix.eu/manjaro|${{ inputs.build-mirror }}|" /lib/manjaro-tools/util.sh
         sudo sed -i '/ParallelDownloads/s/#//' /usr/share/manjaro-tools/pacman-multilib.conf
         sudo sed -i '/ParallelDownloads/s/5/8/' /usr/share/manjaro-tools/pacman-multilib.conf
         
+        #
         [ "$SCOPE" == "minimal" ] && unset SCOPE && unset OFFICE
         [ "$OFFICE" == "false" ] && unset OFFICE
 
         #source the version info from current release info
         source <(curl -s https://gitlab.manjaro.org/packages/core/manjaro-release/-/raw/master/lsb-release)
-        
         # sudo sed -i -e "s|dist_name=\$(get_distname)|dist_name=${DISTRIB_ID%Linux}|g" /usr/lib/manjaro-tools/util.sh
         # sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=manjaro|g' /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${{ inputs.release-tag }}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         
-        #troca busca de kerneis para pegar qualquer kernel
-        sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
+        # #troca busca de kerneis para pegar qualquer kernel
+        # sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
         
-        #disable kernel version verification
-        sudo sed -i '/${iso_kernel}/s/^/#/' /usr/lib/manjaro-tools/util-iso.sh
+        # #disable kernel version verification
+        # sudo sed -i '/${iso_kernel}/s/^/#/' /usr/lib/manjaro-tools/util-iso.sh
         
         # Remove last } in /usr/lib/manjaro-tools/util-iso-image.sh
         sudo sed -i ':a;$!{N;ba;};s/\(.*\)}/\1/' /usr/lib/manjaro-tools/util-iso-image.sh
@@ -424,7 +428,8 @@ runs:
       env:
         EDITION: ${{ inputs.edition }}
         MANJAROBRANCH: ${{ inputs.manjarobranch }}
-        SCOPE: ${{ inputs.scope }}
+        BIGBRANCH: ${{ inputs.bigbranch }}
+        #SCOPE: ${{ inputs.scope }}
         VERSION: ${{ inputs.version }}
         KERNEL: ${{ inputs.kernel }}
         # CODE_NAME: ${{ inputs.code-name }}
@@ -450,11 +455,11 @@ runs:
         fi
         
         #MESA
-        if [ "$MESA" -eq "amber" ]; then
+        if [ "$MESA" = "amber" ]; then
           echo '
           mesa-amber
           lib32-mesa-amber' >> iso-profiles/community/$EDITION/Packages-Root
-        elif [ "$MESA" -eq "mesa-git" ]; then
+        elif [ "$MESA" = "mesa-git" ]; then
           echo '
           mesa-tkg-git
           lib32-mesa-tkg-git' >> iso-profiles/community/$EDITION/Packages-Root
@@ -464,13 +469,13 @@ runs:
         fi
         
         # Beta
-        if [ "${{ inputs.bigbranch }}" = "beta" ];then
-          echo "biglinux-testing" iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
-          echo "biglinux-testing" iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
+        if [ "$BIGBRANCH" = "beta" ];then
+          echo "biglinux-testing" >> iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
+          echo "biglinux-testing" >> iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
         fi
         
         # Development
-        if [ "${{ inputs.bigbranch }}" = "development" ];then
+        if [ "$BIGBRANCH" = "development" ];then
           #add repo testing
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/community/$EDITION/user-repos.conf
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
@@ -498,23 +503,24 @@ runs:
         
         echo $KERNEL
         echo $EDITION
-        echo $BRANCH
-        echo $SCOPE
+        echo $MANJAROBRANCH
+        echo $BIGBRANCH
         echo $MESA
         
-        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux$KERNEL ${OFFICE:+-o}
-
+        sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k ${KERNEL} ${OFFICE:+-o}
+        #linux
+        
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
         #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
-        if [ "$EXTRAREPO" = "testing" ];then
-          TARGET_ISO_PATH=${EDITION}_DEVELOPMENT_${{ inputs.release-tag }}_k$KERNEL.iso
-        #elif [ "$KERNEL" = "latest" ];then
-        #  TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$kernelVer.iso
+        if [ "$BIGBRANCH" = "development" ];then
+          TARGET_ISO_PATH=${EDITION}_DEVELOPMENT_${{ inputs.release-tag }}_k${KERNEL}.iso
+        elif [ "$BIGBRANCH" = "beta" ];then
+         TARGET_ISO_PATH=${EDITION}_BETA_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
         else
-          TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k$KERNEL.iso
+          TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
         fi
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
         echo "::set-output name=file-path::$TARGET_ISO_PATH"
