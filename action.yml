@@ -412,10 +412,10 @@ runs:
           sudo sed -i 's|256K|1024K|g' /usr/lib/manjaro-tools/util-iso.sh
         fi
         
-        #select folder with isoprofiles
-        mkdir -p ~/.config/manjaro-tools/
-        cd ..
-        echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
+        # #select folder with isoprofiles
+        # mkdir -p ~/.config/manjaro-tools/
+        # cd ..
+        # echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
     
     - id: checkout-iso-profiles
       shell: bash
@@ -424,9 +424,9 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
             
-    # ## Tmate ##
-    # - name: Setup TMATE Session
-    #   uses: mxschmitt/action-tmate@v3
+    ## Tmate ##
+    - name: Setup TMATE Session
+      uses: mxschmitt/action-tmate@v3
       
     - id: image-build
       shell: bash
