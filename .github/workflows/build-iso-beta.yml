@@ -1,6 +1,13 @@
 name: Biglinux Build ISO Beta
 on:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'With TMATE'
+        required: false
+        default: false
+        
   #schedule:
     #- cron:  '0 4 * * 5'
     

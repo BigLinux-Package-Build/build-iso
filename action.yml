@@ -46,7 +46,7 @@ inputs:
   build-mirror:
     description: 'specific build mirror to use'
     required: false
-    default: https://mnvoip.mm.fcix.net/manjaro
+    default: https://forksystems.mm.fcix.net/manjaro
   # gpg-secret-key-base64:
   #   description: 'base64 encoded gpg secret key (without a passphrase) to sign the zip (if set)'
   #   required: false
@@ -173,12 +173,13 @@ runs:
           sudo install -m644 pacman.conf /etc/pacman.conf
           sudo install -m644 makepkg.conf /etc/
           sudo mkdir -p /etc/pacman.d
-          sudo touch /etc/pacman.d/mirrorlist
-          echo 'Server = ${{ inputs.build-mirror }}/stable/$repo/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
-          sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
-          sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
-          sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
-          sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
+          # sudo touch /etc/pacman.d/mirrorlist
+          # echo 'Server = ${{ inputs.build-mirror }}/stable/$repo/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
+          wget https://raw.githubusercontent.com/BigLinux-Package-Build/manjaro-mirror/main/mirrorlist -O /etc/pacman.d/mirrorlist
+          # sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
+          # sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
+          # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
+          # sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
         popd
         
     - id: install-keyrings
@@ -424,9 +425,10 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
             
-    # ## Tmate ##
-    # - name: Setup TMATE Session
-    #   uses: mxschmitt/action-tmate@v3
+    ## Tmate ##
+    - name: Setup TMATE Session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
       
     - id: image-build
       shell: bash

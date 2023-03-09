@@ -1,6 +1,13 @@
 name: Biglinux Build ISO Matrix
 on:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'With TMATE'
+        required: false
+        default: false
+        
   schedule:
     - cron:  '0 6 * * 5'
     
@@ -153,9 +160,10 @@ jobs:
           #ssh xivastudio@shell.sourceforge.net create
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
       
-      ## Tmate ##
-      #- name: Setup TMATE Session
-        #uses: mxschmitt/action-tmate@v3
+      # Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
       - name: Telegram Alert Success
         shell: bash -O extglob {0}
