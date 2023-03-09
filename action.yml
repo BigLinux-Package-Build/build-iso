@@ -458,20 +458,20 @@ runs:
         if [ "$MESA" = "amber" ]; then
           echo '
           mesa-amber
-          lib32-mesa-amber' >> iso-profiles/community/$EDITION/Packages-Root
+          lib32-mesa-amber' | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
         elif [ "$MESA" = "mesa-git" ]; then
           echo '
           mesa-tkg-git
-          lib32-mesa-tkg-git' >> iso-profiles/community/$EDITION/Packages-Root
-          sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Desktop
-          sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Mhwd
-          sed -i '/vulkan-swrast/d'  iso-profiles/community/$EDITION/Packages-Desktop
+          lib32-mesa-tkg-git' | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
+          sudo sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Desktop
+          sudo sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Mhwd
+          sudo sed -i '/vulkan-swrast/d'  iso-profiles/community/$EDITION/Packages-Desktop
         fi
         
         # Beta
         if [ "$BIGBRANCH" = "beta" ];then
-          echo "biglinux-testing" >> iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
-          echo "biglinux-testing" >> iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
+          echo "biglinux-testing" | sudo tee -a iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
+          echo "biglinux-testing" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
         fi
         
         # Development
