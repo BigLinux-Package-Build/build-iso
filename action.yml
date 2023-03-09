@@ -19,10 +19,10 @@ inputs:
   bigbranch: 
     description: 'stable, beta, development'
     required: true
-  # scope:
-  #   description: 'full (default) or minimal image'
-  #   required: false
-  #   default: full
+  scope:
+    description: 'full (default) or minimal image'
+    required: false
+    default: full
   # version:
   #   description: 'dist_release version (upstream if not given)'
   #   required: false
@@ -429,7 +429,7 @@ runs:
         EDITION: ${{ inputs.edition }}
         MANJAROBRANCH: ${{ inputs.manjarobranch }}
         BIGBRANCH: ${{ inputs.bigbranch }}
-        #SCOPE: ${{ inputs.scope }}
+        SCOPE: ${{ inputs.scope }}
         VERSION: ${{ inputs.version }}
         KERNEL: ${{ inputs.kernel }}
         # CODE_NAME: ${{ inputs.code-name }}
