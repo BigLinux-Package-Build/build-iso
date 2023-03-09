@@ -297,10 +297,10 @@ runs:
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         
         # #troca busca de kerneis para pegar qualquer kernel
-        # sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
+        sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
         
         # #disable kernel version verification
-        # sudo sed -i '/${iso_kernel}/s/^/#/' /usr/lib/manjaro-tools/util-iso.sh
+        sudo sed -i '/${iso_kernel}/s/^/#/' /usr/lib/manjaro-tools/util-iso.sh
         
         # Remove last } in /usr/lib/manjaro-tools/util-iso-image.sh
         sudo sed -i ':a;$!{N;ba;};s/\(.*\)}/\1/' /usr/lib/manjaro-tools/util-iso-image.sh
@@ -424,9 +424,9 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
             
-    ## Tmate ##
-    - name: Setup TMATE Session
-      uses: mxschmitt/action-tmate@v3
+    # ## Tmate ##
+    # - name: Setup TMATE Session
+    #   uses: mxschmitt/action-tmate@v3
       
     - id: image-build
       shell: bash
