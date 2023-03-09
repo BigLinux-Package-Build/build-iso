@@ -450,6 +450,7 @@ runs:
         
         #Build Release and Unix Time
         echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
+        echo "BUILD_BRANCH=$BIGBRANCH" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         
         #Kernel Latest
@@ -473,11 +474,13 @@ runs:
           sudo sed -i '/vulkan-swrast/d'  iso-profiles/community/$EDITION/Packages-Desktop
         fi
         
-        # Beta
-        if [ "$BIGBRANCH" = "beta" ];then
-          echo "biglinux-testing" | sudo tee -a iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
-          echo "biglinux-testing" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
-        fi
+        # # Stable
+        # if [ "$BIGBRANCH" = "stable" ];then
+        # fi
+        
+        # # Beta
+        # if [ "$BIGBRANCH" = "beta" ];then
+        # fi
         
         # Development
         if [ "$BIGBRANCH" = "development" ];then
