@@ -291,8 +291,8 @@ runs:
 
         #source the version info from current release info
         source <(curl -s https://gitlab.manjaro.org/packages/core/manjaro-release/-/raw/master/lsb-release)
-        sudo sed -i -e "s|dist_name=\$(get_distname)|dist_name=biglinux|g" /usr/lib/manjaro-tools/util.sh
-        sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=biglinux|g' /usr/lib/manjaro-tools/util.sh
+        sudo sed -i -e "s|dist_name=\$(get_distname)|dist_name=${DISTRIB_ID%Linux}|g" /usr/lib/manjaro-tools/util.sh
+        sudo sed -i -e 's|iso_name=$(get_osid)|iso_name=manjaro|g' /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${{ inputs.release-tag }}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         
@@ -577,7 +577,7 @@ runs:
         #mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
         #-w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
         #-o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
-        if [ "$EXTRAREPO" != "testing" ];then
+        if [ "$BIGBRANCH" = "stable" ];then
           mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
           -w "https://iso.biglinux.com.br/${{ steps.image-build.outputs.file-path }}" \
           -w "https://osdn.net/projects/biglinux/storage/${{ steps.image-build.outputs.file-path }}" \
@@ -595,7 +595,7 @@ runs:
         #   exit 0
         # fi
         
-        if [ "$EXTRAREPO" != "testing" ];then
+        if [ "$BIGBRANCH" = "stable" ];then
           echo "## github upload"
           release=$(echo ${{ steps.image-build.outputs.file-path }} | sed 's/_k.*//')
 
