@@ -290,11 +290,12 @@ runs:
         echo "### install-manjaro-tools ###"
         #make majaro-tools
         sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-tools.git
-        cd manjaro-tools
-        sudo make SYSCONFDIR=/etc PREFIX=/usr
-        sudo make SYSCONFDIR=/etc PREFIX=/usr install_base
-        sudo make SYSCONFDIR=/etc PREFIX=/usr install_yaml
-        sudo make SYSCONFDIR=/etc PREFIX=/usr install_iso
+        pushd manjaro-tools
+          sudo make SYSCONFDIR=/etc PREFIX=/usr
+          sudo make SYSCONFDIR=/etc PREFIX=/usr install_base
+          sudo make SYSCONFDIR=/etc PREFIX=/usr install_yaml
+          sudo make SYSCONFDIR=/etc PREFIX=/usr install_iso
+        popd
         
         sudo rm -r manjaro-tools
         
@@ -438,8 +439,6 @@ runs:
           sudo sed -i 's|256K|1024K|g' /usr/lib/manjaro-tools/util-iso.sh
         fi
         
-        sudo rm -r iso-profiles
-        
         # #select folder with isoprofiles
         # mkdir -p ~/.config/manjaro-tools/
         # cd ..
@@ -564,6 +563,8 @@ runs:
 
         FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
+        
+        sudo rm -r iso-profiles
         
         ls -lh
         echo ${{ steps.image-build.outputs.file-path }}
