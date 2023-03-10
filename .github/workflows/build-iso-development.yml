@@ -118,19 +118,18 @@ jobs:
       - name: Verify md5sum
         shell: bash
         run: |
-          cd iso
           mkdir mnt
           find -type f -iname "*.iso" -exec sudo mount -o loop {} mnt \;
-          cd mnt/manjaro/x86_64/
-          for i in *.md5; do 
-            if [ "$(md5sum -c $i | cut -d " " -f2)" != "OK" ]; then
-              echo "deu ruim no md5dum do arquivo $i"
-              exit 1
-            else
-              echo "md5sum do arquivo $i está OK"
-            fi
-          done
-          cd ../../..
+          pushd mnt/manjaro/x86_64/
+            for i in *.md5; do 
+              if [ "$(md5sum -c $i | cut -d " " -f2)" != "OK" ]; then
+                echo "deu ruim no md5dum do arquivo $i"
+                exit 1
+              else
+                echo "md5sum do arquivo $i está OK"
+              fi
+            done
+          popd
           sudo umount mnt
       
       - name: upload-prepare
