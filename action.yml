@@ -559,7 +559,7 @@ runs:
         fi
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
         # echo "::set-output name=file-path::$TARGET_ISO_PATH"
-        echo "name=file-path::$TARGET_ISO_PATH" >> $GITHUB_OUTPUT
+        echo "file-path=$TARGET_ISO_PATH" >> $GITHUB_OUTPUT
 
         FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
