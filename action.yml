@@ -106,6 +106,7 @@ runs:
     - id: install-build-dependencies
       shell: bash
       run: |
+        echo "### install-build-dependencies ###"
         # echo "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu jammy main" | sudo tee /etc/apt/sources.list.d/apt-fast.list
         # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B
         sudo apt update
@@ -154,6 +155,7 @@ runs:
       env:
         PACMAN_VERSION: 6.0.1
       run: |
+        echo "### install-pacman ###"
         sudo git clone --depth 1 https://gitlab.manjaro.org/packages/core/pacman.git
         pushd pacman
           sudo wget https://sources.archlinux.org/other/pacman/pacman-${PACMAN_VERSION}.tar.xz
@@ -181,10 +183,12 @@ runs:
           # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
           # sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
         popd
+        sudo rm -r pacman
         
     - id: install-keyrings
       shell: bash
       run: |
+        echo "### install-keyrings ###"
         sudo install -dm755 /usr/share/pacman/keyrings/
 
         sudo git clone --depth 1 https://gitlab.manjaro.org/packages/core/manjaro-keyring.git
@@ -193,6 +197,7 @@ runs:
           sudo install -m0644 manjaro-trusted /usr/share/pacman/keyrings/
           sudo install -m0644 manjaro-revoked /usr/share/pacman/keyrings/
         popd
+        sudo rm -r manjaro-keyring
         
         sudo git clone --depth 1 https://github.com/biglinux/biglinux-keyring.git
         pushd biglinux-keyring
@@ -200,6 +205,7 @@ runs:
           sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
           sudo install -m0644 biglinux-trusted /usr/share/pacman/keyrings/
         popd
+        sudo rm -r biglinux-keyring
 
         mkdir -p archlinux-keyring
         pushd archlinux-keyring
@@ -209,6 +215,7 @@ runs:
           sudo install -m0644 archlinux-trusted /usr/share/pacman/keyrings/
           sudo install -m0644 archlinux-revoked /usr/share/pacman/keyrings/
         popd
+        sudo rm -r archlinux-keyring
 
         #sudo pacman-key --init
         #sudo pacman-key --populate archlinux manjaro biglinux
@@ -220,9 +227,10 @@ runs:
     - id: pull-keys
       shell: bash
       run: |
+        echo "### pull-keys ###"
         sudo git clone https://github.com/biglinux/biglinux-key.git
-        sudo mkdir -p /etc/pacman.d/gnupg/
-        sudo cp -r biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
+        sudo install -dm755 /etc/pacman.d/gnupg/
+        sudo install -m0644 biglinux-key/usr/share/pacman/keyrings/* /etc/pacman.d/gnupg/
         sudo rm -r biglinux-key
         sudo pacman -Sy
         
@@ -231,6 +239,7 @@ runs:
       env:
         VERSION: "24"
       run: |
+        echo "### install-arch-install-scripts ###"
         sudo wget https://github.com/archlinux/arch-install-scripts/archive/refs/tags/v${VERSION}.tar.gz -O arch-install-scripts.tar.gz
         sudo tar -xvf arch-install-scripts.tar.gz
         sudo make -C arch-install-scripts-${VERSION}
@@ -239,20 +248,28 @@ runs:
         
         sudo wget https://gitlab.manjaro.org/applications/pacman-mirrors/-/raw/v4.19x-stable/conf/pacman-mirrors.conf -O /etc/pacman-mirrors.conf
         
+        sudo rm arch-install-scripts.tar.gz
+        sudo rm -r arch-install-scripts-${VERSION}
+        
     - id: install-calamares-tools
       shell: bash
       run: |
+        echo "### install-calamares-tools ###"
         sudo git clone --depth 1 https://gitlab.manjaro.org/applications/calamares-tools.git
         
-        cd calamares-tools
-        sudo install -d /usr/share/calamares/
-        sudo cp -rv schemas/ /usr/share/calamares/
+        pushd calamares-tools
+          sudo install -d /usr/share/calamares/
+          sudo cp -rv schemas/ /usr/share/calamares/
+        popd
+        
+        sudo rm -r calamares-tools
         
     - id: install-mkinitcpio
       shell: bash
       env:
         VERSION: "30"
       run: |
+        echo "### install-mkinitcpio ###"
         # sudo wget https://gitlab.archlinux.org/mkinitcpio/mkinitcpio/-/archive/v${VERSION}/mkinitcpio-v${VERSION}.tar.gz
         sudo wget https://github.com/BigLinux-Package-Build/build-iso/raw/main/mkinitcpio/mkinitcpio-v${VERSION}.tar.gz
         sudo tar -xf mkinitcpio-v${VERSION}.tar.gz
@@ -262,11 +279,15 @@ runs:
         # sudo make -C mkinitcpio-${VERSION} install
         sudo sed -i -e 's|File|Path|' /usr/share/libalpm/hooks/*hook
         
+        sudo rm mkinitcpio-v${VERSION}.tar.gz
+        sudo rm -r mkinitcpio-v${VERSION}
+        
     - id: install-manjaro-tools
       shell: bash
       env:
         CUSTOM_REPO: ${{ inputs.custom-repo }}
       run: |
+        echo "### install-manjaro-tools ###"
         #make majaro-tools
         sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-tools.git
         cd manjaro-tools
@@ -274,6 +295,8 @@ runs:
         sudo make SYSCONFDIR=/etc PREFIX=/usr install_base
         sudo make SYSCONFDIR=/etc PREFIX=/usr install_yaml
         sudo make SYSCONFDIR=/etc PREFIX=/usr install_iso
+        
+        sudo rm -r manjaro-tools
         
         #add custom repo
         if [ ! -z ${CUSTOM_REPO} ]; then
@@ -415,6 +438,8 @@ runs:
           sudo sed -i 's|256K|1024K|g' /usr/lib/manjaro-tools/util-iso.sh
         fi
         
+        sudo rm -r iso-profiles
+        
         # #select folder with isoprofiles
         # mkdir -p ~/.config/manjaro-tools/
         # cd ..
@@ -445,17 +470,12 @@ runs:
         OFFICE: ${{ inputs.office-chooser }}
         MESA: ${{ inputs.mesa }}
         EXTRAREPO: ${{ inputs.extrarepo }}
-      run: |      
+      run: |
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
         # cd iso-profiles/biglinux-make-iso-profiles
         # sudo bash -x make-iso-profiles ci/cd $MESA $EXTRAREPO $EDITION
         # cd ../..
-        
-        #Build Release and Unix Time
-        echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
-        echo "BUILD_BRANCH=$BIGBRANCH" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
-        echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         
         #Kernel Latest
         if [ "$KERNEL" = "latest" ];then
@@ -478,13 +498,15 @@ runs:
           sudo sed -i '/vulkan-swrast/d'  iso-profiles/community/$EDITION/Packages-Desktop
         fi
         
-        # # Stable
-        # if [ "$BIGBRANCH" = "stable" ];then
-        # fi
+        # Stable
+        if [ "$BIGBRANCH" = "stable" ];then
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | cut -d "_" -f1 | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
+        fi
         
-        # # Beta
-        # if [ "$BIGBRANCH" = "beta" ];then
-        # fi
+        # Beta
+        if [ "$BIGBRANCH" = "beta" ];then
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
+        fi
         
         # Development
         if [ "$BIGBRANCH" = "development" ];then
@@ -509,7 +531,9 @@ runs:
           echo anti-ruscher | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
         fi
         
-        
+        #Build Release and Unix Time
+        echo "BUILD_BRANCH=$BIGBRANCH" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
+        echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
         
@@ -535,7 +559,8 @@ runs:
           TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
         fi
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
-        echo "::set-output name=file-path::$TARGET_ISO_PATH"
+        # echo "::set-output name=file-path::$TARGET_ISO_PATH"
+        echo "name=file-path::$TARGET_ISO_PATH" >> $GITHUB_OUTPUT
 
         FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
@@ -573,18 +598,21 @@ runs:
         touch /home/runner/.ssh/github_actions
         chmod 600 /home/runner/.ssh/github_actions
         ssh-agent -a /tmp/ssh_agent.sock > /dev/null
-        echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
+        # echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
+        echo "name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)" >> $GITHUB_OUTPUT
+        
         mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
         
     - id: Torrent
       shell: bash -O extglob {0}
       env:
         EXTRAREPO: ${{ inputs.extrarepo }}
-      run: |    
+      run: |
+        echo "### Torrent ###"
         #mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
         #-w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
         #-o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
-        if [ "$BIGBRANCH" = "stable" ];then
+        if [ "${{ inputs.bigbranch }}" = "stable" ];then
           mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
           -w "https://iso.biglinux.com.br/${{ steps.image-build.outputs.file-path }}" \
           -w "https://osdn.net/projects/biglinux/storage/${{ steps.image-build.outputs.file-path }}" \
@@ -596,13 +624,14 @@ runs:
       env:
         EXTRAREPO: ${{ inputs.extrarepo }}
       run: |
+        echo "### upload-github-release ###"
         # if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
         # if [ -z "${{ inputs.release-tag }}" ]; then 
         #   echo "## no release tag given"
         #   exit 0
         # fi
         
-        if [ "$BIGBRANCH" = "stable" ];then
+        if [ "${{ inputs.bigbranch }}" = "stable" ];then
           echo "## github upload"
           release=$(echo ${{ steps.image-build.outputs.file-path }} | sed 's/_k.*//')
 
