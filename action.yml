@@ -600,7 +600,7 @@ runs:
         chmod 600 /home/runner/.ssh/github_actions
         ssh-agent -a /tmp/ssh_agent.sock > /dev/null
         # echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
-        echo "name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)" >> $GITHUB_OUTPUT
+        echo "upload-files=./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)" >> $GITHUB_OUTPUT
         
         mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
         
