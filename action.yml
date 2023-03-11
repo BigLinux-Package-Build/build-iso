@@ -528,6 +528,8 @@ runs:
           
           #add anti-ruscher
           echo anti-ruscher | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
+          
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         fi
         
         #Build Release and Unix Time
