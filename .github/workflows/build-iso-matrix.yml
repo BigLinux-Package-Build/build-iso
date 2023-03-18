@@ -40,6 +40,7 @@ jobs:
           
           echo "Kernels=[$oldLts, $atualLts, latest]" >> $GITHUB_OUTPUT
       
+          echo $Kernels
   build-release:
     runs-on: ubuntu-20.04
     needs: [prepare-release, kernel-version]
