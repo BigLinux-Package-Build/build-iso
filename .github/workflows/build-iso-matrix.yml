@@ -55,7 +55,7 @@ jobs:
 
   build-release:
     runs-on: ubuntu-20.04
-    needs: [prepare-release, kernel-version]
+    needs: [prepare-release, nmatrix]
     strategy:
       matrix:
         EDITION: [biglinux]
