@@ -42,7 +42,7 @@ jobs:
           
           echo "Kernels=[$oldLts, $atualLts, latest]" >> $GITHUB_OUTPUT
       
-          echo "${{ steps.kernel.outputs.Kernels }}"
+          echo "${{ steps.kernel-version.outputs.Kernels }}"
   build-release:
     runs-on: ubuntu-20.04
     needs: [prepare-release, kernel-version]
@@ -55,7 +55,7 @@ jobs:
         #EXTRAREPO: []
         # KERNEL: [510, 515, 60]
         # KERNEL: [510, 515, latest]
-        KERNEL: ${{ steps.kernel.outputs.Kernels }}
+        KERNEL: ${{ steps.kernel-version.outputs.Kernels }}
         
     steps:
       - id: time
