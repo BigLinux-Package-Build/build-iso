@@ -27,9 +27,18 @@ jobs:
     outputs:
       release_tag: ${{ steps.time.outputs.time }}
       
+  kernel-version:
+    runs-on: ubuntu-20.04
+    steps:
+      - id: kernel
+        run: |
+          echo "atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')" >> $GITHUB_OUTPUT
+          
+          echo "oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)" >> $GITHUB_OUTPUT
+      
   build-release:
     runs-on: ubuntu-20.04
-    needs: [prepare-release]
+    needs: [prepare-release, kernel-version]
     strategy:
       matrix:
         EDITION: [biglinux]
@@ -37,8 +46,8 @@ jobs:
         BIGBRANCH: [stable]
         # SCOPE: [full]
         #EXTRAREPO: []
-        # KERNEL: [510, 515, 60]
-        KERNEL: [510, 515, latest]
+        KERNEL: [${{ needs.kernel-version.outputs.oldLts }}, ${{ needs.kernel-version.outputs.atualLts }}, latest]
+        # KERNEL: [510, 515, latest]
         
     steps:
       - id: time
