@@ -27,34 +27,6 @@ jobs:
     outputs:
       release_tag: ${{ steps.time.outputs.time }}
       
-#   kernel-version:
-#     runs-on: ubuntu-20.04
-#     outputs:
-#       kernels: ${{ steps.kernel.outputs.Kernels }}
-#     steps:
-#       - id: kernel
-#         run: |
-#           atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
-#           
-#           oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
-#           
-#           echo "Kernels=[latest]" >> $GITHUB_OUTPUT
-          
-  nmatrix:
-    runs-on: ubuntu-latest
-    outputs:
-      nmatrix: ${{ steps.set-nmatrix.outputs.Nmatrix }}
-    steps:
-      - id: set-nmatrix
-        run: |
-          atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
-          
-          oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
-          
-          latest=latest
-          
-          echo "Nmatrix=[$atualLts, $oldLts, $latest]" >> $GITHUB_OUTPUT
-
   build-release:
     runs-on: ubuntu-20.04
     needs: [prepare-release, nmatrix]
@@ -67,7 +39,7 @@ jobs:
         #EXTRAREPO: []
         # KERNEL: [510, 515, 60]
         # KERNEL: [510, 515, latest]
-        KERNEL: ${{fromJSON(needs.nmatrix.outputs.nmatrix)}}
+        KERNEL: [oldLts, atualLts, latest]
         
     steps:
       - id: time
@@ -75,16 +47,16 @@ jobs:
         with:
           format: 'YY.MM.DD'
       
-      - name: Mesa
-        shell: bash -O extglob {0}
-        run: |
-          if [ "${{ matrix.kernel }}" = "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-          elif [ "${{ matrix.kernel }}" = "latest" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
-          fi
-          echo ${{ env.MESA }}
-          echo "${{ env.MESA }}"
-          echo $env.MESA
-          echo "$env.MESA"
+      # - name: Mesa
+      #   shell: bash -O extglob {0}
+      #   run: |
+      #     if [ "${{ matrix.kernel }}" = "510" ];then echo "MESA=amber" >> $GITHUB_ENV
+      #     elif [ "${{ matrix.kernel }}" = "latest" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
+      #     fi
+      #     echo ${{ env.MESA }}
+      #     echo "${{ env.MESA }}"
+      #     echo $env.MESA
+      #     echo "$env.MESA"
       
       - name: Build and Upload GitHub
         uses: BigLinux-Package-Build/build-iso@main
@@ -95,7 +67,7 @@ jobs:
           # scope: ${{ matrix.scope }}
           version: ${{ steps.time.outputs.time }}
           kernel: ${{ matrix.kernel }}
-          mesa: ${{ env.MESA }}
+          # mesa: ${{ env.MESA }}
           extrarepo: ${{ matrix.extrarepo }}
           # code-name: "Sikaris"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'

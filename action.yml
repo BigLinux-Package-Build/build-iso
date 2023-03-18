@@ -476,25 +476,31 @@ runs:
         # sudo bash -x make-iso-profiles ci/cd $MESA $EXTRAREPO $EDITION
         # cd ../..
         
-        #Kernel Latest
-        if [ "$KERNEL" = "latest" ];then
-          kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
-          echo "linux-latest"  | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
-          KERNEL=$kernelVer
-        fi
-        
         #MESA
-        if [ "$MESA" = "amber" ]; then
+        if [ "$KERNEL" = "oldLts" ]; then
           echo '
           mesa-amber
           lib32-mesa-amber' | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
-        elif [ "$MESA" = "mesa-git" ]; then
+        elif [ "$KERNEL" = "latest" ]; then
           echo '
           mesa-tkg-git
           lib32-mesa-tkg-git' | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
           sudo sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Desktop
           sudo sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Mhwd
           sudo sed -i '/vulkan-swrast/d'  iso-profiles/community/$EDITION/Packages-Desktop
+        fi
+        
+        #KERNEL
+        if [ "$KERNEL" = "oldLts" ];then
+            oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
+            KERNEL=$oldLts
+        elif [ "$KERNEL" = "atualLts" ];then
+            atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
+            KERNEL=$atualLts
+        elif [ "$KERNEL" = "latest" ];then
+          kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
+          echo "linux-latest"  | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
+          KERNEL=$kernelVer
         fi
         
         # Stable
