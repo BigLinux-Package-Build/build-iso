@@ -38,7 +38,7 @@ jobs:
           
           oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
           
-          echo 'Kernels=['"$oldLts, $atualLts,"' latest]' >> $GITHUB_OUTPUT
+          echo "Kernels=[latest]" >> $GITHUB_OUTPUT
 
   build-release:
     runs-on: ubuntu-20.04
