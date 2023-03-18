@@ -30,7 +30,7 @@ jobs:
   kernel-version:
     runs-on: ubuntu-20.04
     outputs:
-      kernels: ${{ steps.kernel-version.outputs.kernels }}
+      kernels: ${{ steps.kernel.outputs.kernels }}
     steps:
       - id: kernel
         run: |
