@@ -29,20 +29,17 @@ jobs:
       
   kernel-version:
     runs-on: ubuntu-20.04
+    outputs:
+      kernels: ${{ steps.kernel.outputs.Kernels }}
     steps:
       - id: kernel
         run: |
           atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
           
-          echo "$atualLts"
-          
           oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
           
-          echo "$oldLts"
-          
-          echo "Kernels=[$oldLts, $atualLts, latest]" >> $GITHUB_OUTPUT
-      
-          echo "${{ steps.kernel-version.outputs.Kernels }}"
+          echo 'Kernels=['"$oldLts, $atualLts,"' latest]' >> $GITHUB_OUTPUT
+
   build-release:
     runs-on: ubuntu-20.04
     needs: [prepare-release, kernel-version]
@@ -55,7 +52,7 @@ jobs:
         #EXTRAREPO: []
         # KERNEL: [510, 515, 60]
         # KERNEL: [510, 515, latest]
-        KERNEL: ${{fromJSON(steps.kernel-version.outputs.Kernels)}}
+        KERNEL: ${{fromJSON(needs.kernel-version.outputs.kernels)}}
         
     steps:
       - id: time
