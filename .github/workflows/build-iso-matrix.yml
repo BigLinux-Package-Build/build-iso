@@ -27,18 +27,31 @@ jobs:
     outputs:
       release_tag: ${{ steps.time.outputs.time }}
       
-  kernel-version:
-    runs-on: ubuntu-20.04
+#   kernel-version:
+#     runs-on: ubuntu-20.04
+#     outputs:
+#       kernels: ${{ steps.kernel.outputs.Kernels }}
+#     steps:
+#       - id: kernel
+#         run: |
+#           atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
+#           
+#           oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
+#           
+#           echo "Kernels=[latest]" >> $GITHUB_OUTPUT
+          
+  nmatrix:
+    runs-on: ubuntu-latest
     outputs:
-      kernels: [latest]
+      nmatrix: ${{ steps.set-nmatrix.outputs.Nmatrix }}
     steps:
-      - id: kernel
+      - id: set-nmatrix
         run: |
           atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
           
           oldLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n2 | sed 's/\.//g' | tail -n1)
           
-          echo "Kernels=[latest]" >> $GITHUB_OUTPUT
+          echo "Nmatrix=[$atualLts, $oldLts]" >> $GITHUB_OUTPUT
 
   build-release:
     runs-on: ubuntu-20.04
