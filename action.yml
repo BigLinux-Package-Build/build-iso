@@ -153,7 +153,8 @@ runs:
     - id: install-pacman
       shell: bash
       env:
-        PACMAN_VERSION: 6.0.1
+        #PACMAN_VERSION: 6.0.1
+        PACMAN_VERSION: 6.0.2
       run: |
         echo "### install-pacman ###"
         sudo git clone --depth 1 https://gitlab.manjaro.org/packages/core/pacman.git
@@ -237,7 +238,8 @@ runs:
     - id: install-arch-install-scripts
       shell: bash
       env:
-        VERSION: "24"
+        #VERSION: "24"
+        VERSION: "27"
       run: |
         echo "### install-arch-install-scripts ###"
         sudo wget https://github.com/archlinux/arch-install-scripts/archive/refs/tags/v${VERSION}.tar.gz -O arch-install-scripts.tar.gz
@@ -267,7 +269,8 @@ runs:
     - id: install-mkinitcpio
       shell: bash
       env:
-        VERSION: "30"
+        #VERSION: "30"
+        VERSION: "32"
       run: |
         echo "### install-mkinitcpio ###"
         # sudo wget https://gitlab.archlinux.org/mkinitcpio/mkinitcpio/-/archive/v${VERSION}/mkinitcpio-v${VERSION}.tar.gz
