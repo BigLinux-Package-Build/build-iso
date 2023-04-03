@@ -417,7 +417,7 @@ runs:
         # sudo sed -i "s|miso_pxe_common miso_pxe_http miso_pxe_nbd miso_pxe_nfs||g" /usr/share/manjaro-tools/mkinitcpio.conf
 
         # Change udev to systemd
-        sudo sed -i "s|base udev|systemd|g" /usr/share/manjaro-tools/mkinitcpio.conf
+        # sudo sed -i "s|base udev|systemd|g" /usr/share/manjaro-tools/mkinitcpio.conf
 
         #add big update repository
         if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-default.conf)" ];then
