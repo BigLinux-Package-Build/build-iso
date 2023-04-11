@@ -455,6 +455,10 @@ runs:
           sudo sed -i 's|256K|1024K|g' /usr/lib/manjaro-tools/util-iso.sh
         fi
         
+        #change iso-profiles directory
+        sudo sed -i 's/iso-profiles\/manjaro/iso-profiles\/biglinux/' /usr/lib/manjaro-tools/util.sh
+        sudo sed -i 's|&& \[\[ -d ${_workdir}/iso-profiles/community \]\]||' /usr/lib/manjaro-tools/util.sh
+        
         # #select folder with isoprofiles
         # mkdir -p ~/.config/manjaro-tools/
         # cd ..
