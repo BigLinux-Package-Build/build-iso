@@ -68,6 +68,7 @@ jobs:
           # code-name: "Ruah"
           iso-profiles-repo: 'https://github.com/xivastudio/iso-profile'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+          tmate: ${{ inputs.debug_enabled }}
           
       # - name: Prepare Files to Upload
         # shell: bash

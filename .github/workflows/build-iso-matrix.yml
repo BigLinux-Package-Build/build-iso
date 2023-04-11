@@ -72,6 +72,7 @@ jobs:
           # code-name: "Sikaris"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+          tmate: ${{ inputs.debug_enabled }}
           
       - name: Prepare Files to Upload
         shell: bash -O extglob {0}

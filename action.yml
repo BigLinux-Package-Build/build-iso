@@ -89,6 +89,9 @@ inputs:
   # extrarepo:
   #   description: 'extra repository to buld package'
   #   required: false
+  tmate:
+    description: 'run tmate'
+    required: false
     
 outputs:
   file-path:
@@ -463,11 +466,11 @@ runs:
         REPO: ${{ inputs.iso-profiles-repo }}
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
-            
-    # ## Tmate ##
-    # - name: Setup TMATE Session
-    #   uses: mxschmitt/action-tmate@v3
-    #   # if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
+    # Tmate ##
+    - name: Setup TMATE Session
+      uses: mxschmitt/action-tmate@v3
+      if: "${{ inputs.tmate == 'true' }}"
       
     - id: image-build
       shell: bash
