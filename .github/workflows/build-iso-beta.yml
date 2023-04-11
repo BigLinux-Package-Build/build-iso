@@ -32,13 +32,13 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [biglinux]
+        EDITION: [kde]
         MANJAROBRANCH: [stable]
         BIGBRANCH: [beta]
         # SCOPE: [full]
         # EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
-        KERNEL: [515]
+        KERNEL: [atualLts]
 
         
     steps:
@@ -66,7 +66,7 @@ jobs:
           mesa: ${{ env.MESA }}
           extrarepo: ${{ matrix.extrarepo }}
           # code-name: "Ruah"
-          iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
+          iso-profiles-repo: 'https://github.com/xivastudio/iso-profile'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           
       # - name: Prepare Files to Upload
