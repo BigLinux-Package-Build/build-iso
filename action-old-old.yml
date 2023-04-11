@@ -493,14 +493,14 @@ runs:
         if [ "$KERNEL" = "oldLts" ]; then
           echo '
           mesa-amber
-          lib32-mesa-amber' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
+          lib32-mesa-amber' | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
         elif [ "$KERNEL" = "latest" ]; then
           echo '
           mesa-tkg-git
-          lib32-mesa-tkg-git' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
-          sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
-          sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Mhwd
-          sudo sed -i '/vulkan-swrast/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
+          lib32-mesa-tkg-git' | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
+          sudo sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Desktop
+          sudo sed -i '/libva-mesa/d'  iso-profiles/community/$EDITION/Packages-Mhwd
+          sudo sed -i '/vulkan-swrast/d'  iso-profiles/community/$EDITION/Packages-Desktop
         fi
         
         #KERNEL
@@ -512,48 +512,48 @@ runs:
             KERNEL=$atualLts
         elif [ "$KERNEL" = "latest" ];then
           kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
-          echo "linux-latest"  | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
+          echo "linux-latest"  | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
           KERNEL=$kernelVer
         fi
         
         # Stable
         if [ "$BIGBRANCH" = "stable" ];then
-          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | cut -d "_" -f1 | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | cut -d "_" -f1 | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         fi
         
         # Beta
         if [ "$BIGBRANCH" = "beta" ];then
-          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         fi
         
         # Development
         if [ "$BIGBRANCH" = "development" ];then
           #add repo testing
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/biglinux/$EDITION/user-repos.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/community/$EDITION/user-repos.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
           
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' iso-profiles/biglinux/$EDITION/user-repos.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' iso-profiles/community/$EDITION/user-repos.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
           
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/testing\/$arch/;p;x;}' iso-profiles/biglinux/$EDITION/user-repos.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/testing\/$arch/;p;x;}' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/testing\/$arch/;p;x;}' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/testing\/$arch/;p;x;}' iso-profiles/community/$EDITION/user-repos.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/testing\/$arch/;p;x;}' iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/testing\/$arch/;p;x;}' iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
           
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/biglinux/$EDITION/user-repos.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
-          sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/community/$EDITION/user-repos.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/community/$EDITION/live-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/community/$EDITION/root-overlay/etc/pacman.conf
           
           #add anti-ruscher
-          echo anti-ruscher | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
+          echo anti-ruscher | sudo tee -a iso-profiles/community/$EDITION/Packages-Root
           
-          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         fi
         
         #Build Release and Unix Time
-        echo "BUILD_BRANCH=$BIGBRANCH" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
-        echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
+        echo "BUILD_BRANCH=$BIGBRANCH" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
+        echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/community/$EDITION/root-overlay/etc/big-release
         
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
         
