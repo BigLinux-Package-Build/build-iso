@@ -42,21 +42,10 @@ jobs:
         KERNEL: [oldLts, atualLts, latest]
         
     steps:
-      - id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          format: 'YY.MM.DD'
-      
-      # - name: Mesa
-      #   shell: bash -O extglob {0}
-      #   run: |
-      #     if [ "${{ matrix.kernel }}" = "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-      #     elif [ "${{ matrix.kernel }}" = "latest" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
-      #     fi
-      #     echo ${{ env.MESA }}
-      #     echo "${{ env.MESA }}"
-      #     echo $env.MESA
-      #     echo "$env.MESA"
+      # - id: time
+      #   uses: nanzm/get-time-action@v1.1
+      #   with:
+      #     format: 'YY.MM.DD'
       
       - name: Build and Upload GitHub
         uses: BigLinux-Package-Build/build-iso@main
@@ -64,12 +53,9 @@ jobs:
           edition: ${{ matrix.edition }}
           manjarobranch: ${{ matrix.manjarobranch }}
           bigbranch: ${{ matrix.bigbranch }}
-          # scope: ${{ matrix.scope }}
-          version: ${{ steps.time.outputs.time }}
+          # version: ${{ steps.time.outputs.time }}
           kernel: ${{ matrix.kernel }}
-          # mesa: ${{ env.MESA }}
           extrarepo: ${{ matrix.extrarepo }}
-          # code-name: "Sikaris"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           tmate: ${{ inputs.debug_enabled }}

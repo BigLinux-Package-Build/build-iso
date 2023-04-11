@@ -6,9 +6,6 @@ inputs:
     description: 'iso profiles to clone'
     required: false
     default: 'https://github.com/biglinux/iso-profiles'
-  # iso-profiles-branch:
-  #   description: 'branch of the iso profiles to check out'
-  #   required: false
   edition: 
     description: 'name of the iso profile to build'
     required: true
@@ -23,72 +20,23 @@ inputs:
     description: 'full (default) or minimal image'
     required: false
     default: full
-  # version:
-  #   description: 'dist_release version (upstream if not given)'
-  #   required: false
   kernel:
     description: 'kernel version'
     required: false
     default: 515
-  # code-name:
-  #   description: 'manjaro code-name (upstream if not given)'
-  #   required: false
+  extrarepo:
+    description: 'extra repository to buld package'
+    required: false
   release-tag:
     description: 'release tag to upload to (if set)'
     required: false
-  # custom-repo:
-  #   description: 'name a custom repo to be prioritized above the default ones'
-  #   required: false
-  # office-chooser:
-  #   description: 'include calamares office installer module'
-  #   required: false
-  #   default: "false"
   build-mirror:
     description: 'specific build mirror to use'
     required: false
     default: https://forksystems.mm.fcix.net/manjaro
-  # gpg-secret-key-base64:
-  #   description: 'base64 encoded gpg secret key (without a passphrase) to sign the zip (if set)'
-  #   required: false
-  # gpg-passphrase:
-  #   description: 'phrase to decrypt the gpg secret key if given'
-  #   required: false
-  # additional-trusted-gpg:
-  #   description: 'gpg keyids that pacman should trust'
-  #   required: false
-  # cdn77-host:
-  #   description: 'cdn77 upload credentials'
-  #   required: false
-  # cdn77-user:
-  #   description: 'cdn77 upload credentials'
-  #   required: false
-  # cdn77-pwd:
-  #   description: 'cdn77 upload credentials'
-  #   required: false
-  # sf-project:
-  #   description: 'sf upload credentials'
-  #   required: false
-  # sf-user:
-  #   description: 'sf upload credentials'
-  #   required: false
-  # sf-key:
-  #   description: 'sf upload credentials'
-  #   required: false
-  # osdn-project:
-  #   description: 'osdn upload credentials'
-  #   required: false
-  # osdn-user:
-  #   description: 'osdn upload credentials'
-  #   required: false
-  # osdn-key:
-  #   description: 'osdn upload credentials'
-  #   required: false
   mesa:
     description: 'alternative mesa'
     required: false
-  # extrarepo:
-  #   description: 'extra repository to buld package'
-  #   required: false
   tmate:
     description: 'run tmate'
     required: false
@@ -101,17 +49,10 @@ outputs:
 runs:
   using: "composite"
   steps:
-  
-    # # Tmate ##
-    # - name: Setup TMATE Session
-    #   uses: mxschmitt/action-tmate@v3
-      
     - id: install-build-dependencies
       shell: bash
       run: |
         echo "### install-build-dependencies ###"
-        # echo "deb http://ppa.launchpad.net/apt-fast/stable/ubuntu jammy main" | sudo tee /etc/apt/sources.list.d/apt-fast.list
-        # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys A2166B8DE8BDC3367D1901C11EE2FF37CA8DA16B
         sudo apt update
         # sudo apt dist-upgrade
         # sudo apt install \
@@ -156,7 +97,6 @@ runs:
     - id: install-pacman
       shell: bash
       env:
-        #PACMAN_VERSION: 6.0.1
         PACMAN_VERSION: 6.0.2
       run: |
         echo "### install-pacman ###"
@@ -180,12 +120,7 @@ runs:
           sudo install -m644 makepkg.conf /etc/
           sudo mkdir -p /etc/pacman.d
           # sudo touch /etc/pacman.d/mirrorlist
-          # echo 'Server = ${{ inputs.build-mirror }}/stable/$repo/$arch' | sudo tee -a /etc/pacman.d/mirrorlist
           sudo wget https://raw.githubusercontent.com/BigLinux-Package-Build/manjaro-mirror/main/mirrorlist -O /etc/pacman.d/mirrorlist
-          # sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /etc/pacman.conf
-          # sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /etc/pacman.conf
-          # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /etc/pacman.conf
-          # sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /etc/pacman.conf
         popd
         sudo rm -r pacman
         
@@ -220,13 +155,6 @@ runs:
           sudo install -m0644 archlinux-revoked /usr/share/pacman/keyrings/
         popd
         sudo rm -r archlinux-keyring
-
-        #sudo pacman-key --init
-        #sudo pacman-key --populate archlinux manjaro biglinux
-
-        # for gpg_key in ${{ inputs.additional-trusted-gpg }}; do
-        #   sudo pacman-key --keyserver keys.openpgp.org --recv-key $gpg_key
-        # done
         
     - id: pull-keys
       shell: bash
@@ -241,7 +169,6 @@ runs:
     - id: install-arch-install-scripts
       shell: bash
       env:
-        #VERSION: "24"
         VERSION: "27"
       run: |
         echo "### install-arch-install-scripts ###"
@@ -272,7 +199,6 @@ runs:
     - id: install-mkinitcpio
       shell: bash
       env:
-        #VERSION: "30"
         VERSION: "32"
       run: |
         echo "### install-mkinitcpio ###"
@@ -403,11 +329,6 @@ runs:
         
         # Add root-overlay
         sudo sed -i '/copy_overlay "${profile_dir}\/root-overlay" "${path}"/a [[ -e ${profile_dir}\/root-overlay ]] && copy_overlay "${profile_dir}\/root-overlay" "${path}"' /usr/lib/manjaro-tools/util-iso.sh
-        
-        # bootsplash
-        # if [ -z "$(grep bootsplash-${{ inputs.edition }} /usr/share/manjaro-tools/mkinitcpio.conf)" ]; then
-        #    sudo sed -i "s|keyboard keymap|keyboard keymap bootsplash-${{ inputs.edition }}|g" /usr/share/manjaro-tools/mkinitcpio.conf
-        # fi
 
         # plymouth
         # Add video modules to use plymouth in live mode
@@ -443,10 +364,6 @@ runs:
         # # Disable remove pkgs cache
         sudo sed -i 's|path=$1/var/lib/pacman/sync|path=$1/usr/share/man|'g /usr/lib/manjaro-tools/util-iso-image.sh
         
-        # #select folder with isoprofiles
-        # mkdir -p ~/.config/manjaro-tools/
-        # echo "run_dir=$workdir/$isoprofilesdir" > ~/.config/manjaro-tools/iso-profiles.conf
-        
         # Faster compression
         if [ "${{ inputs.bigbranch }}" != "stable" ];then
           sudo sed -i 's|-Xcompression-level 20|-Xcompression-level 6|g' /usr/lib/manjaro-tools/util-iso.sh
@@ -456,13 +373,8 @@ runs:
         fi
         
         #change iso-profiles directory
-        sudo sed -i 's/iso-profiles\/manjaro/iso-profiles\/biglinux/' /usr/lib/manjaro-tools/util.sh
-        sudo sed -i 's|&& \[\[ -d ${_workdir}/iso-profiles/community \]\]||' /usr/lib/manjaro-tools/util.sh
-        
-        # #select folder with isoprofiles
-        # mkdir -p ~/.config/manjaro-tools/
-        # cd ..
-        # echo "run_dir=$PWD/iso-profiles" > ~/.config/manjaro-tools/iso-profiles.conf
+        # sudo sed -i 's/iso-profiles\/manjaro/iso-profiles\/biglinux/' /usr/lib/manjaro-tools/util.sh
+        # sudo sed -i 's|&& \[\[ -d ${_workdir}/iso-profiles/community \]\]||' /usr/lib/manjaro-tools/util.sh
     
     - id: checkout-iso-profiles
       shell: bash
@@ -483,18 +395,14 @@ runs:
         MANJAROBRANCH: ${{ inputs.manjarobranch }}
         BIGBRANCH: ${{ inputs.bigbranch }}
         SCOPE: ${{ inputs.scope }}
-        VERSION: ${{ inputs.version }}
+        # VERSION: ${{ inputs.version }}
         KERNEL: ${{ inputs.kernel }}
-        # CODE_NAME: ${{ inputs.code-name }}
         OFFICE: ${{ inputs.office-chooser }}
         MESA: ${{ inputs.mesa }}
         EXTRAREPO: ${{ inputs.extrarepo }}
       run: |
         ## BigLinux Pre Config Build ISO
         echo "## BigLinux Pre Config Build ISO ##"
-        # cd iso-profiles/biglinux-make-iso-profiles
-        # sudo bash -x make-iso-profiles ci/cd $MESA $EXTRAREPO $EDITION
-        # cd ../..
         
         #MESA
         if [ "$KERNEL" = "oldLts" ]; then
@@ -603,21 +511,6 @@ runs:
       run: |
         echo "## calculating hashes"
         md5sum ${{ steps.image-build.outputs.file-path }} >${{ steps.image-build.outputs.file-path }}.md5
-        # sha1sum ${{ steps.image-build.outputs.file-path }} >${{ steps.image-build.outputs.file-path }}.sha1
-        # sha256sum ${{ steps.image-build.outputs.file-path }} >${{ steps.image-build.outputs.file-path }}.sha256
-        # sha512sum ${{ steps.image-build.outputs.file-path }} >${{ steps.image-build.outputs.file-path }}.sha512
-        
-    #- id: gpg_sign
-      #shell: bash
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.gpg-secret-key-base64 }}" ]; then 
-          #echo "## no gpg secret given"
-          #exit 0
-        #fi
-        #echo "## gpg signing"
-        #cat <(echo -e "${{ inputs.gpg-secret-key-base64 }}" | base64 --decode) | gpg --batch --import &>/dev/null
-        #gpg --pinentry-mode loopback --passphrase "${{ inputs.gpg-passphrase }}" --detach-sign ./${{ steps.image-build.outputs.file-path }}
         
     - id: upload-prepare
       shell: bash -O extglob {0}
@@ -638,9 +531,6 @@ runs:
         EXTRAREPO: ${{ inputs.extrarepo }}
       run: |
         echo "### Torrent ###"
-        #mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
-        #-w "https://iso.biglinux.com.br/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
-        #-o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
         if [ "${{ inputs.bigbranch }}" = "stable" ];then
           mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
           -w "https://iso.biglinux.com.br/${{ steps.image-build.outputs.file-path }}" \
@@ -654,11 +544,6 @@ runs:
         EXTRAREPO: ${{ inputs.extrarepo }}
       run: |
         echo "### upload-github-release ###"
-        # if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        # if [ -z "${{ inputs.release-tag }}" ]; then 
-        #   echo "## no release tag given"
-        #   exit 0
-        # fi
         
         if [ "${{ inputs.bigbranch }}" = "stable" ];then
           echo "## github upload"
@@ -684,77 +569,3 @@ runs:
         else
           echo "ISO testing subir em outro repo"
         fi
-          
-    #- name: upload-sourceforge
-      #shell: bash -O extglob {0}
-      #env:
-        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.sf-project }}" ] || [ -z "${{ inputs.sf-user }}" ] || [ -z "${{ inputs.sf-key }}" ]; then 
-          #echo "## not (all) credentials given for sourceforge upload"
-          #exit 0
-        #fi
-        #echo "## sourceforge upload"
-        
-        #ssh-keyscan -t rsa frs.sourceforge.net >> /home/runner/.ssh/known_hosts
-        #echo "${{ inputs.sf-key }}" >> /home/runner/.ssh/github_actions
-        #ssh-add /home/runner/.ssh/github_actions
-
-        ### create target dir
-        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
-          #${{ inputs.sf-user }}@frs.sourceforge.net:/home/frs/project/${{ inputs.sf-project }}/
-
-        ### upload
-        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
-          #${{ inputs.sf-user }}@frs.sourceforge.net:/home/frs/project/${{ inputs.sf-project }}/${{ inputs.edition }}/${{ inputs.version }}/
-          
-    #- name: upload-osdn
-      #shell: bash -O extglob {0}
-      #env:
-        #SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.osdn-project }}" ] || [ -z "${{ inputs.osdn-user }}" ] || [ -z "${{ inputs.osdn-key }}" ]; then 
-          #echo "## not (all) credentials given for osdn upload"
-          #exit 0
-        #fi
-        #echo "## osdn upload"
-
-        #ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
-        #echo "${{ inputs.osdn-key }}" >> /home/runner/.ssh/github_actions
-        #ssh-add /home/runner/.ssh/github_actions
-
-        ### create target dir
-        #rsync -vaP --stats -e ssh ${{ inputs.edition }} \
-          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/m/ma/${{ inputs.osdn-project }}/
-
-        #OSDN_GROUP=$(echo ${{ inputs.osdn-project }} | cut -c 1)/$(echo ${{ inputs.osdn-project }} | cut -c 1-2)
-
-        #rsync -vaP --stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
-          #${{ inputs.osdn-user }}@storage.osdn.net:/storage/groups/${OSDN_GROUP}/${{ inputs.osdn-project }}/${{ inputs.edition }}/${{ inputs.version }}/
-
-    #- name: upload-cdn77
-      #shell: bash -O extglob {0}
-      #run: |
-        ## if is not yet supported in composite https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md#if-condition
-        #if [ -z "${{ inputs.cdn77-host }}" ] || [ -z "${{ inputs.cdn77-user }}" ] || [ -z "${{ inputs.cdn77-pwd }}" ]; then 
-          #echo "## not (all) credentials given for cdn77 upload"
-          #exit 0
-        #fi
-        #echo "## cdn77 upload"
-        
-        #mktorrent -v -a udp://tracker.opentrackr.org:1337 -l 21 \
-          #-w "https://download.manjaro.org/${{ inputs.edition }}/${{ inputs.version }}/${{ steps.image-build.outputs.file-path }}" \
-          #-o ${{ steps.image-build.outputs.file-path }}.torrent ${{ steps.image-build.outputs.file-path }}
-        
-        #ssh-keyscan -t rsa ${{ inputs.cdn77-host }} >> /home/runner/.ssh/known_hosts
-
-        ## create target dir
-        #sshpass -p "${{ inputs.cdn77-pwd }}" rsync -vaP --stats -e ssh ${{ inputs.edition }} \
-          #${{ inputs.cdn77-user }}@${{ inputs.cdn77-host }}:/www/
-
-        ## upload
-        #sshpass -p "${{ inputs.cdn77-pwd }}" rsync -vaP \
-          #--stats -e ssh ${{ steps.upload-prepare.outputs.upload-files }} \
-          #${{ inputs.cdn77-user }}@${{ inputs.cdn77-host }}:/www/${{ inputs.edition }}/${{ inputs.version }}/
