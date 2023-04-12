@@ -383,10 +383,10 @@ runs:
         BRANCH: ${{ inputs.iso-profiles-branch }}
       run: sudo git clone ${BRANCH:+--branch ${BRANCH}} --depth 1 ${REPO} iso-profiles
 
-    # Tmate ##
-    - name: Setup TMATE Session
-      uses: mxschmitt/action-tmate@v3
-      if: "${{ inputs.tmate == 'true' }}"
+    # # Tmate ##
+    # - name: Setup TMATE Session
+    #   uses: mxschmitt/action-tmate@v3
+    #   if: "${{ inputs.tmate == 'true' }}"
       
     - id: image-build
       shell: bash
@@ -520,6 +520,13 @@ runs:
         
         ls -lh
         echo ${{ steps.image-build.outputs.file-path }}
+        echo ${EDITION} > edition
+        echo ${name} > name
+        
+    # Tmate ##
+    - name: Setup TMATE Session
+      uses: mxschmitt/action-tmate@v3
+      if: "${{ inputs.tmate == 'true' }}"
         
       
     - id: hash
