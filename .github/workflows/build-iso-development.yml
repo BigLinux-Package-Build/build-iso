@@ -1,6 +1,13 @@
 name: Biglinux Build ISO Development
 on:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'With TMATE'
+        required: false
+        default: false
+  
   #schedule:
     #- cron:  '0 4 * * 5'
     
@@ -25,42 +32,26 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [biglinux]
+        EDITION: [kde]
         MANJAROBRANCH: [stable]
         BIGBRANCH: [development]
-        # SCOPE: [full]
         EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
         KERNEL: [atualLts]
 
         
     steps:
-      - id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          format: 'YY.MM.DD'
-      
-      - name: Mesa
-        run: |
-          if [ "${{ matrix.kernel }}" -le "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-          elif [ "${{ matrix.kernel }}" -ge "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
-          fi
-          echo ${{ env.MESA }}
-      
       - name: Build
         uses: BigLinux-Package-Build/build-iso@main
         with:
           edition: ${{ matrix.edition }}
           manjarobranch: ${{ matrix.manjarobranch }}
           bigbranch: ${{ matrix.bigbranch }}
-          # scope: ${{ matrix.scope }}
-          version: ${{ steps.time.outputs.time }}
           kernel: ${{ matrix.kernel }}
-          mesa: ${{ env.MESA }}
           extrarepo: ${{ matrix.extrarepo }}
-          # code-name: "Ruah"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+          tmate: ${{ inputs.debug_enabled }}
           
       # - name: Prepare Files to Upload
         # shell: bash
@@ -102,7 +93,6 @@ jobs:
           ##SourceForge XIVAStudio
           #ssh xivastudio@shell.sourceforge.net create
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
-      
       
       # - name: Upload OSDN
         # shell: bash -O extglob {0}
@@ -171,9 +161,10 @@ jobs:
           git commit -m "new release"
           git push
           
-      # # Tmate ##
-      # - name: Setup TMATE Session
-      #   uses: mxschmitt/action-tmate@v3
+      # Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
             
       - name: Telegram Alert Success
         shell: bash

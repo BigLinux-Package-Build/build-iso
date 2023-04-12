@@ -25,7 +25,7 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [biglinux]
+        EDITION: [kde]
         BRANCH: [stable]
         SCOPE: [full]
         EXTRAREPO: [testing]
@@ -34,31 +34,17 @@ jobs:
 
         
     steps:
-      - id: time
-        uses: nanzm/get-time-action@v1.1
-        with:
-          format: 'YY.MM.DD'
-      
-      - name: Mesa
-        run: |
-          if [ "${{ matrix.kernel }}" -le "510" ];then echo "MESA=amber" >> $GITHUB_ENV
-          elif [ "${{ matrix.kernel }}" -ge "519" ];then echo "MESA=mesa-git" >> $GITHUB_ENV
-          fi
-          echo ${{ env.MESA }}
-      
       - name: Build
         uses: BigLinux-Package-Build/build-iso@main
         with:
           edition: ${{ matrix.edition }}
-          branch: ${{ matrix.branch }}
-          scope: ${{ matrix.scope }}
-          version: ${{ steps.time.outputs.time }}
+          manjarobranch: ${{ matrix.manjarobranch }}
+          bigbranch: ${{ matrix.bigbranch }}
           kernel: ${{ matrix.kernel }}
-          mesa: ${{ env.MESA }}
           extrarepo: ${{ matrix.extrarepo }}
-          code-name: "Ruah"
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
+          tmate: ${{ inputs.debug_enabled }}
           
       # - name: Prepare Files to Upload
         # shell: bash
@@ -152,9 +138,10 @@ jobs:
           git commit -m "new release"
           git push
           
-      # # Tmate ##
-      # - name: Setup TMATE Session
-      #   uses: mxschmitt/action-tmate@v3
+      # Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
             
       - name: Telegram Alert Success
         shell: bash

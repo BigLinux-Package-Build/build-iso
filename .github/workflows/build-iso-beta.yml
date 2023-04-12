@@ -48,7 +48,7 @@ jobs:
           bigbranch: ${{ matrix.bigbranch }}
           kernel: ${{ matrix.kernel }}
           extrarepo: ${{ matrix.extrarepo }}
-          iso-profiles-repo: 'https://github.com/xivastudio/iso-profile'
+          iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           tmate: ${{ inputs.debug_enabled }}
           
@@ -61,7 +61,7 @@ jobs:
           # cp $i iso/
           # done
       
-      #- name: Push to Repo Nimbus
+      #- name: Push to Repo
         #shell: bash
         #run: |
           #echo "## ssh setup"
@@ -161,9 +161,10 @@ jobs:
           git commit -m "new release"
           git push
           
-      # # Tmate ##
-      # - name: Setup TMATE Session
-      #   uses: mxschmitt/action-tmate@v3
+      # Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
             
       - name: Telegram Alert Success
         shell: bash
