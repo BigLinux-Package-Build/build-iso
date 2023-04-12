@@ -33,7 +33,8 @@ jobs:
     strategy:
       matrix:
         EDITION: [xivastudio]
-        BRANCH: [stable]
+        MANJAROBRANCH: [stable]
+        BIGBRANCH: [stable]
         # KERNEL: [510, 515, 519]
         KERNEL: [atualLts]
         
