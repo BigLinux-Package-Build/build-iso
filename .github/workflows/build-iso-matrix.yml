@@ -53,7 +53,6 @@ jobs:
           edition: ${{ matrix.edition }}
           manjarobranch: ${{ matrix.manjarobranch }}
           bigbranch: ${{ matrix.bigbranch }}
-          # version: ${{ steps.time.outputs.time }}
           kernel: ${{ matrix.kernel }}
           extrarepo: ${{ matrix.extrarepo }}
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
