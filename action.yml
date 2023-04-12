@@ -480,23 +480,21 @@ runs:
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
         
-        
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
+        if [ "${EDITION}" = "xivastudio" ]; then
+          name=xivastudio
+        else
+          name=biglinux
+        fi
         
         #TARGET_ISO_PATH=$(basename $OUTPUT_ISO_PATH)
         if [ "${EDITION}" = "kde" -o "${EDITION}" = "xivastudio" ];then
           EDITION=
         else
           EDITION=_${EDITION}
-        fi
-        
-        if [ "${EDITION}" = "xivastudio" ]; then
-          name=xivastudio
-        else
-          name=biglinux
         fi
         
         if [ "$BIGBRANCH" = "development" ];then
@@ -509,6 +507,7 @@ runs:
           # TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
           TARGET_ISO_PATH=${name}${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
         fi
+        
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
         # echo "::set-output name=file-path::$TARGET_ISO_PATH"
         echo "file-path=$TARGET_ISO_PATH" >> $GITHUB_OUTPUT
@@ -520,15 +519,12 @@ runs:
         
         ls -lh
         echo ${{ steps.image-build.outputs.file-path }}
-        echo ${EDITION} > edition
-        echo ${name} > name
         
     # Tmate ##
     - name: Setup TMATE Session
       uses: mxschmitt/action-tmate@v3
       if: "${{ inputs.tmate == 'true' }}"
         
-      
     - id: hash
       shell: bash
       run: |
