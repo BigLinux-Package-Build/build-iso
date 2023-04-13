@@ -409,7 +409,7 @@ runs:
           echo '
           mesa-amber
           lib32-mesa-amber' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
-        elif [ "$KERNEL" = "latest" ]; then
+        elif [ "$KERNEL" = "latest" -o "$KERNEL" = "-xanmod" ]; then
           echo '
           mesa-tkg-git
           lib32-mesa-tkg-git' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
