@@ -478,13 +478,13 @@ runs:
         echo $BIGBRANCH
         echo $MESA
         
-        if [ -n $(echo $KERNEL | grep xanmod) ];then
+        if [ -n "$(echo $KERNEL | grep xanmod)" ];then
             KERNEL=-${KERNEL}
         fi
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
         
-        if [ -n $(echo $KERNEL | grep xanmod) ];then
+        if [ -n "$(echo $KERNEL | grep xanmod)" ];then
             KERNEL=$(echo ${KERNEL} | sed 's/-//')
         fi
         
