@@ -1,4 +1,4 @@
-name: Biglinux Build ISO Development
+name: Biglinux Build ISO Development Xanmod
 on:
   workflow_dispatch:
     inputs:
