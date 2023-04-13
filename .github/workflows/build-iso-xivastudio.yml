@@ -36,7 +36,7 @@ jobs:
         MANJAROBRANCH: [stable]
         BIGBRANCH: [stable]
         # KERNEL: [510, 515, 519]
-        KERNEL: [oldLts, atualLts, -xanmod]
+        KERNEL: [oldLts, atualLts, xanmod]
         
     steps:
       - name: Build and Upload

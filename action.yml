@@ -409,7 +409,7 @@ runs:
           echo '
           mesa-amber
           lib32-mesa-amber' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
-        elif [ "$KERNEL" = "latest" -o "$KERNEL" = "-xanmod" ]; then
+        elif [ "$KERNEL" = "latest" -o "$KERNEL" = "xanmod" ]; then
           echo '
           mesa-tkg-git
           lib32-mesa-tkg-git' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
@@ -478,7 +478,15 @@ runs:
         echo $BIGBRANCH
         echo $MESA
         
+        if [ -n $(echo $KERNEL | grep xanmod) ];then
+            KERNEL=-${KERNEL}
+        fi
+        
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
+        
+        if [ -n $(echo $KERNEL | grep xanmod) ];then
+            KERNEL=$(echo ${KERNEL} | sed 's/-//')
+        fi
         
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
       
@@ -500,7 +508,7 @@ runs:
         #Kernel Name
         if [ "$KERNEL" != "xanmod" ];then
             KERNEL=k${KERNEL}
-        elif [ "$KERNEL" = "-xanmod" ];then
+        elif [ "$KERNEL" = "xanmod" ];then
             xanVer=$(grep linux-xanmod $(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}') | grep -v headers | cut -d " " -f2 | cut -d "-" -f1 | sed ':a;$!{N;ba;};s/\(.*\)\..*/\1/' | sed 's/\.//')
             KERNEL=$(echo ${KERNEL} | sed 's/-//')${xanVer}
         fi
