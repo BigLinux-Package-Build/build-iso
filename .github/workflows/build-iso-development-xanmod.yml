@@ -1,6 +1,13 @@
-name: Biglinux Build ISO Development XanMod
+name: Biglinux Build ISO Development
 on:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'With TMATE'
+        required: false
+        default: false
+  
   #schedule:
     #- cron:  '0 4 * * 5'
     
@@ -26,8 +33,8 @@ jobs:
     strategy:
       matrix:
         EDITION: [kde]
-        BRANCH: [stable]
-        SCOPE: [full]
+        MANJAROBRANCH: [stable]
+        BIGBRANCH: [development]
         EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
         KERNEL: [-xanmod]
@@ -87,7 +94,6 @@ jobs:
           #ssh xivastudio@shell.sourceforge.net create
           #rsync -CavzpP --progress --rsh=ssh iso/ ${{ secrets.XIVASTUDIO_SOURCEFORGE_USER }}@${{ secrets.XIVASTUDIO_SOURCEFORGE_HOST }}:${{ secrets.XIVASTUDIO_SOURCEFORGE_ISO_DIR_BIGLINUX }}
       
-      
       # - name: Upload OSDN
         # shell: bash -O extglob {0}
         # run: |
@@ -98,6 +104,23 @@ jobs:
           # ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
           
           # rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+          
+      - name: Verify md5sum
+        shell: bash
+        run: |
+          mkdir mnt
+          find -type f -iname "*.iso" -exec sudo mount -o loop {} mnt \;
+          pushd mnt/manjaro/x86_64/
+            for i in *.md5; do 
+              if [ "$(md5sum -c $i | cut -d " " -f2)" != "OK" ]; then
+                echo "deu ruim no md5dum do arquivo $i"
+                exit 1
+              else
+                echo "md5sum do arquivo $i está OK"
+              fi
+            done
+          popd
+          sudo umount mnt
       
       - name: upload-prepare
         shell: bash -O extglob {0}

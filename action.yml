@@ -497,15 +497,24 @@ runs:
           EDITION=_${EDITION}
         fi
         
+        #Kernel Name
+        if [ "$KERNEL" != "xanmod" ];then
+            KERNEL=k${KERNEL}
+        elif [ "$KERNEL" = "-xanmod" ];then
+            xanVer=$(grep linux-xanmod $(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}') | grep -v headers | cut -d " " -f2 | cut -d "-" -f1 | sed ':a;$!{N;ba;};s/\(.*\)\..*/\1/' | sed 's/\.//')
+            KERNEL=$(echo ${KERNEL} | sed 's/-//')${xanVer}
+        fi
+            
+        #renome ISO
         if [ "$BIGBRANCH" = "development" ];then
           # TARGET_ISO_PATH=${EDITION}_DEVELOPMENT_${{ inputs.release-tag }}_k${KERNEL}.iso
-          TARGET_ISO_PATH=${name}_DEVELOPMENT${EDITION}_${{ inputs.release-tag }}_k${KERNEL}.iso
+          TARGET_ISO_PATH=${name}_DEVELOPMENT${EDITION}_${{ inputs.release-tag }}_${KERNEL}.iso
         elif [ "$BIGBRANCH" = "beta" ];then
          # TARGET_ISO_PATH=${EDITION}_BETA_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
-         TARGET_ISO_PATH=${name}_BETA${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
+         TARGET_ISO_PATH=${name}_BETA${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_${KERNEL}.iso
         else
           # TARGET_ISO_PATH=${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
-          TARGET_ISO_PATH=${name}${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_k${KERNEL}.iso
+          TARGET_ISO_PATH=${name}${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_${KERNEL}.iso
         fi
         
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
