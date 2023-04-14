@@ -416,6 +416,9 @@ runs:
           sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
           sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Mhwd
           sudo sed -i '/vulkan-swrast/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
+        elif [ "$KERNEL" = "xanmod" ]; then
+          echo '
+          linux-firmware' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
         fi
         
         #KERNEL
