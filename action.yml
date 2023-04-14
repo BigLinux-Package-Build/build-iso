@@ -416,9 +416,6 @@ runs:
           sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
           sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Mhwd
           sudo sed -i '/vulkan-swrast/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
-        elif [ "$KERNEL" = "xanmod" ]; then
-          echo '
-          linux-firmware' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
         fi
         
         #KERNEL
@@ -432,6 +429,10 @@ runs:
           kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
           echo "linux-latest"  | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
           KERNEL=$kernelVer
+        elif [ -n "$(echo $KERNEL | grep xanmod)" ];then
+          echo '
+          linux-firmware' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
+          KERNEL=-${KERNEL}
         fi
         
         # Stable
@@ -480,10 +481,6 @@ runs:
         echo $MANJAROBRANCH
         echo $BIGBRANCH
         echo $MESA
-        
-        if [ -n "$(echo $KERNEL | grep xanmod)" ];then
-            KERNEL=-${KERNEL}
-        fi
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
         
