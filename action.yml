@@ -102,8 +102,10 @@ runs:
         echo "### install-pacman ###"
         sudo git clone --depth 1 https://gitlab.manjaro.org/packages/core/pacman.git
         pushd pacman
-          sudo wget https://sources.archlinux.org/other/pacman/pacman-${PACMAN_VERSION}.tar.xz
-          sudo tar -xvf pacman-${PACMAN_VERSION}.tar.xz
+          # sudo wget https://sources.archlinux.org/other/pacman/pacman-${PACMAN_VERSION}.tar.xz
+          sudo wget https://github.com/BigLinux-Package-Build/build-iso/raw/main/pacman/pacman-${PACMAN_VERSION}.tar.gz
+          # sudo tar -xvf pacman-${PACMAN_VERSION}.tar.xz
+          sudo tar -xvzf pacman-${PACMAN_VERSION}.tar.gz
           pushd pacman-${PACMAN_VERSION}
             sudo patch -p1 -i ../pacman-sync-first-option.patch
             sudo meson --prefix=/usr \
