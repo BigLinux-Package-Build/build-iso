@@ -429,8 +429,7 @@ runs:
             atualLts=$(curl -s https://www.kernel.org/feeds/kdist.xml | grep ": longterm" | sed 's/^.*<title>//' | sed 's/<\/title>.*$//' | cut -d ":" -f1 | rev | cut -d "." -f2,3 | rev | head -n1 | sed 's/\.//g')
             KERNEL=$atualLts
         elif [ "$KERNEL" = "latest" ];then
-          # kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
-          kernelVer=$(pacman -Ss linux | grep linux[0-9][0-9] | grep core | grep -v headers | grep -v rc | cut -d "/" -f2 | awk '{print $1}' | tail -n1)
+          kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
           echo "linux-latest"  | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
           KERNEL=$kernelVer
         elif [ -n "$(echo $KERNEL | grep xanmod)" ];then
