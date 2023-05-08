@@ -155,8 +155,8 @@ jobs:
           cd big-releases
           echo ${{ needs.prepare-release.outputs.release_tag }} >> testing
           git add --all
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "${{ secrets.GIT_USER }}@users.noreply.github.com"
+          git config --local user.name "${{ secrets.GIT_USER }}"
           git commit -m "new release"
           git push
           
