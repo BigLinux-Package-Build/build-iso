@@ -431,7 +431,7 @@ runs:
         elif [ "$KERNEL" = "latest" ];then
           # kernelVer=62
           # kernelVer=$(pacman -Sl | grep linux[0-9] | grep core | grep -vE "rc|headers" | sort | tail -n1 | cut -d " " -f2 | sed 's/linux//')
-          kernelVer=curl -s https://raw.githubusercontent.com/biglinux/linux-latest/stable/PKGBUILD | awk -F= '/kernelver=/{print $2}'
+          kernelVer=$(curl -s https://raw.githubusercontent.com/biglinux/linux-latest/stable/PKGBUILD | awk -F= '/kernelver=/{print $2}')
           echo "linux-latest"  | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
           KERNEL=$kernelVer
         elif [ -n "$(echo $KERNEL | grep xanmod)" ];then
