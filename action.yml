@@ -479,6 +479,11 @@ runs:
         echo "BUILD_BRANCH=$BIGBRANCH" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
         echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
         
+        #LABEL
+        sudo sed -i "s/label=.*/label=BigLinux_${{ inputs.release-tag }}.iso/" iso-profiles/biglinux/$EDITION/profile.conf
+        cat iso-profiles/biglinux/$EDITION/profile.conf
+        
+        
         sudo rm -r iso-profiles/biglinux-make-iso-profiles
         
         echo $KERNEL
