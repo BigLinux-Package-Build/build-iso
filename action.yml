@@ -259,7 +259,7 @@ runs:
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         
         sudo sed -i -e 's|dist_branding=.*|dist_branding="biglinux"|' /usr/lib/manjaro-tools/util.sh
-        sudo sed -i 's/_${profile}${_edition}_${dist_release//' /usr/lib/manjaro-tools/util-iso.sh
+        sudo sed -i 's/_${profile}${_edition}_${dist_release/-live/' /usr/lib/manjaro-tools/util-iso.sh
         
         # #troca busca de kerneis para pegar qualquer kernel
         sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
