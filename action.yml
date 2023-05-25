@@ -258,6 +258,8 @@ runs:
         sudo sed -i -e "s|dist_release=\$(get_release)|dist_release=${{ inputs.release-tag }}|g" /usr/lib/manjaro-tools/util.sh
         sudo sed -i -e "s|dist_codename=\$(get_codename)|dist_codename=\"${CODE_NAME:-$DISTRIB_CODENAME}\"|g" /usr/lib/manjaro-tools/util.sh
         
+        sudo sed -i -e 's|dist_branding=.*|dist_branding="biglinux"|' /usr/lib/manjaro-tools/util.sh
+        
         # #troca busca de kerneis para pegar qualquer kernel
         sudo sed -i '/_kernver=/s/_kernver=.*/_kernver=$(find $1\/usr\/lib\/modules\/ -type f -name version -exec cat {} +)/' /usr/lib/manjaro-tools/util-iso-boot.sh
         
@@ -480,7 +482,7 @@ runs:
         echo "UNIX_TIMESTAMP=$(( $(date +%s) / 86400 ))" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
         
         #LABEL
-        sudo sed -i "s/label=.*/label=BigLinux_${{ inputs.release-tag }}.iso/" iso-profiles/biglinux/$EDITION/profile.conf
+        sudo sed -i "s/label=.*/label=biglinux_${{ inputs.release-tag }}.iso/" iso-profiles/biglinux/$EDITION/profile.conf
         cat iso-profiles/biglinux/$EDITION/profile.conf
         
         
