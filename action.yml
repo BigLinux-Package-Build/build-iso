@@ -537,14 +537,16 @@ runs:
           TARGET_ISO_PATH=${name}${EDITION}_$(echo ${{ inputs.release-tag }} | cut -d "_" -f1 )_${KERNEL}.iso
         fi
         
+        echo "Find 1"
+        find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}'
+        echo "Find 2"
+        find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt"
+        echo "Find 3"
+        find /var/cache/manjaro-tools/iso -type f
+        
         sudo mv $OUTPUT_ISO_PATH ./$TARGET_ISO_PATH
         # echo "::set-output name=file-path::$TARGET_ISO_PATH"
         echo "file-path=$TARGET_ISO_PATH" >> $GITHUB_OUTPUT
-        
-        echo "Find 1"
-        find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}'
-        echo "find2"
-        find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt"
         
         FILE_PKG=$(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         sudo mv $FILE_PKG ./${TARGET_ISO_PATH}.pkgs
