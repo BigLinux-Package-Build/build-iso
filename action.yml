@@ -353,8 +353,13 @@ runs:
         if [ -z "$(grep biglinux-update-stable /usr/share/manjaro-tools/pacman-default.conf)" ];then
             sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
             sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+            sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/devdevdev.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
             sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
             sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+            echo '
+            [biglinux-stable]
+            SigLevel = PackageRequired
+            Server = https://devdevdev.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
         fi
         
         if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
@@ -363,8 +368,13 @@ runs:
         if [ -z "$(grep biglinux-update-stable /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
           sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
           sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+          sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/devdevdev.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
           sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
           sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+          echo '
+          [biglinux-stable]
+          SigLevel = PackageRequired
+          Server = https://devdevdev.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
         fi
         
         # # Disable remove pkgs cache
