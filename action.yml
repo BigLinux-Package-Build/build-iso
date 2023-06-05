@@ -381,7 +381,7 @@ runs:
             echo '
         [biglinux-testing]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
+        Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
           fi
           
           echo '
