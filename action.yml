@@ -358,6 +358,7 @@ runs:
             sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
             if [ "${{ inputs.bigbranch }}" = "development" ];then
               echo '
+              
         [biglinux-testing]
         SigLevel = PackageRequired
         Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf

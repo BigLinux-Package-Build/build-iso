@@ -169,7 +169,7 @@ jobs:
       - name: Telegram Alert Success
         shell: bash
         run: |
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "💿 ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
       - name: Telegram Alerta Fail
         if: ${{ failure() }}
@@ -177,7 +177,7 @@ jobs:
           #echo ${{ github.token }} | gh auth login --with-token
           #gh release delete ${{ needs.prepare-release.outputs.release_tag }} -y --repo ${{ github.repository }}
           
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "Falha ao gerar ISO  ${{ github.workflow }} link https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false, "disable_web_page_preview": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "🚨 Falha ao gerar ISO  ${{ github.workflow }} link https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}", "disable_notification": false, "disable_web_page_preview": true}' ${{ secrets.MESSAGE_BOT_KEY }}
 
       #- name: Prepare and Push to CDN77
         #shell: bash
