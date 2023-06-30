@@ -61,7 +61,6 @@ runs:
         /opt/google \
         /opt/microsoft \
         /opt/hostedtoolcache \
-        /usr/lib/gcc \
         /usr/lib/llvm* \
         /var/lib/mysql \
         /var/lib/snapd \
