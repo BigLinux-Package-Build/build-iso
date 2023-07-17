@@ -83,16 +83,15 @@ jobs:
           test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
           done
       
-      - name: Upload OSDN
-        shell: bash -O extglob {0}
-        run: |
-          mkdir -p /home/runner/.ssh
-          touch /home/runner/.ssh/id_rsa
-          chmod 600 /home/runner/.ssh/id_rsa
-          echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
-          ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
-        
-          rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
+      # - name: Upload OSDN
+      #   shell: bash -O extglob {0}
+      #   run: |
+      #     mkdir -p /home/runner/.ssh
+      #     touch /home/runner/.ssh/id_rsa
+      #     chmod 600 /home/runner/.ssh/id_rsa
+      #     echo "${{ secrets.XIVASTUDIO_OSDN_KEY }}" > /home/runner/.ssh/id_rsa
+      #     ssh-keyscan -t rsa storage.osdn.net >> /home/runner/.ssh/known_hosts
+      #     rsync -CavzpP --progress iso/ ${{ secrets.XIVASTUDIO_OSDN_USER }}@${{ secrets.XIVASTUDIO_OSDN_HOST }}:${{ secrets.XIVASTUDIO_OSDN_DIR }}
       
 #       - name: Push to Repo SourceForge
 #         shell: bash -O extglob {0}
