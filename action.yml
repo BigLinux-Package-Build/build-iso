@@ -465,11 +465,11 @@ runs:
         echo "## BigLinux Pre Config Build ISO ##"
         
         #MESA
-        if [ "$KERNEL" = "oldLts" -a $EDITION != "xivastudio" ]; then
-          echo '
-          mesa-amber
-          lib32-mesa-amber' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
-        elif [ "$KERNEL" = "latest" -o "$KERNEL" = "xanmod" ]; then
+        # if [ "$KERNEL" = "oldLts" -a $EDITION != "xivastudio" ]; then
+        #   echo '
+        #   mesa-amber
+        #   lib32-mesa-amber' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
+        if [ "$KERNEL" = "latest" -o "$KERNEL" = "xanmod" ]; then
           echo '
           mesa-tkg-git
           lib32-mesa-tkg-git' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
