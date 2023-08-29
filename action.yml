@@ -204,7 +204,8 @@ runs:
         VERSION: "27"
       run: |
         echo "### install-arch-install-scripts ###"
-        sudo wget https://github.com/archlinux/arch-install-scripts/archive/refs/tags/v${VERSION}.tar.gz -O arch-install-scripts.tar.gz
+        # sudo wget https://github.com/archlinux/arch-install-scripts/archive/refs/tags/v${VERSION}.tar.gz -O arch-install-scripts.tar.gz
+        sudo wget https://github.com/BigLinux-Package-Build/build-iso/raw/main/arch-install-scripts/arch-install-scripts-${VERSION}.tar.gz -O arch-install-scripts.tar.gz
         sudo tar -xvf arch-install-scripts.tar.gz
         sudo make -C arch-install-scripts-${VERSION}
         sudo make -C arch-install-scripts-${VERSION} check
