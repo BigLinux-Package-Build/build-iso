@@ -392,12 +392,12 @@ runs:
               
         [biglinux-testing]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
+        Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
             fi
             echo '
         [biglinux-stable]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
+        Server = https://repo.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
         fi
         
         if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
@@ -413,13 +413,13 @@ runs:
             echo '
         [biglinux-testing]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
+        Server = https://repo.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
           fi
           
           echo '
         [biglinux-stable]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
+        Server = https://repo.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
         fi
         
         # # Disable remove pkgs cache
