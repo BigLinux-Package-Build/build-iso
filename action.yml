@@ -472,8 +472,8 @@ runs:
         #   lib32-mesa-amber' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
         if [ "$KERNEL" = "latest" -o "$KERNEL" = "xanmod" ]; then
           echo '
-          mesa-tkg-git
-          lib32-mesa-tkg-git' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
+          mesa-tkg-stable
+          lib32-mesa-tkg-stable' | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
           sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
           sudo sed -i '/libva-mesa/d'  iso-profiles/biglinux/$EDITION/Packages-Mhwd
           sudo sed -i '/vulkan-swrast/d'  iso-profiles/biglinux/$EDITION/Packages-Desktop
