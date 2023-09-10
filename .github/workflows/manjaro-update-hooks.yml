@@ -29,7 +29,7 @@ jobs:
         run: |
           update=$(curl -s https://forum.manjaro.org/c/announcements/stable-updates/12.rss | grep '<title>\[Stable Update\]' | sed 's|.*\[Stable Update] ||g' | cut -f1-3 -d- | head -n1 | sed 's/-//g')
           if [ "$update" -eq "$(date +%Y%m%d)" ]; then 
-            cdnrelease=$(curl -sq https://iso.biglinux.com.br/ | sed 's/<[^>]*>//g' | awk '{print $1}' | grep -vE "md5|pkgs|torrent" | grep biglinux | cut -d "_" -f2 | sed 's/-//g' | uniq | sort | tail -n1)
+            cdnrelease=$(curl -sq https://iso.biglinux.com.br/index.html | sed 's/<[^>]*>//g' | awk '{print $1}' | grep -vE "md5|pkgs|torrent" | grep biglinux | cut -d "_" -f2 | sed 's/-//g' | uniq | sort | tail -n1)
             if [ "$(date +%Y%m%d)" != "$cdnrelease" ]; then
               curl -X POST -H "Accept: application/json" -H "Authorization: token ${{ secrets.WEBHOOK_TOKEN }}" --data '{"event_type": "${{ github.repository }}", "client_payload": { "version": "1.2.3"}}' https://api.github.com/repos/BigLinux-Package-Build/build-iso/dispatches
               else
