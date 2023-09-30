@@ -77,10 +77,12 @@ jobs:
           eval `ssh-agent -s`
           ssh-add /home/runner/.ssh/github_actions
           ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} ${{ secrets.PKGBUILD_HOST }} >> /home/runner/.ssh/known_hosts
+          ip=$(ssh ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }} -p ${{ secrets.PKGBUILD_PORT }} 'echo $(curl -s ident.me) | tail -n1')
+          ssh-keyscan -t rsa -p ${{ secrets.PKGBUILD_PORT }} $ip >> /home/runner/.ssh/known_hosts
           
           #push files
           for i in *.iso *.torrent *.pkgs *.md5; do
-          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@${{ secrets.PKGBUILD_HOST }}:${{ secrets.NIMBUS_DIR }}
+          test -e $i && rsync -vaPpz -e "ssh -p ${{ secrets.PKGBUILD_PORT }}" $i ${{ secrets.PKGBUILD_USER }}@$ip:${{ secrets.NIMBUS_DIR }}
           done
       
       # - name: Upload OSDN
