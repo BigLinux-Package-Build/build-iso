@@ -32,9 +32,9 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [kde]
+        EDITION: [kde, xivastudio]
         MANJAROBRANCH: [stable]
-        BIGBRANCH: [beta]
+        BIGBRANCH: [testing]
         # EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
         KERNEL: [atualLts]
@@ -51,6 +51,8 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           tmate: ${{ inputs.debug_enabled }}
+          repo-mirror: ${{ secrets.REPO_MIRROR }}
+          repo-dev: ${{ secrets.REPO_DEV }}
           
       # - name: Prepare Files to Upload
         # shell: bash
@@ -169,7 +171,7 @@ jobs:
       - name: Telegram Alert Success
         shell: bash
         run: |
-          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
+          curl -X POST -H 'Content-Type: application/json' -d '{"chat_id": "${{ secrets.CHAT_ID }}", "text": "💿 ISO: ${{ github.workflow }} Criada com Sucesso.", "disable_notification": true}' ${{ secrets.MESSAGE_BOT_KEY }}
           
       - name: Telegram Alerta Fail
         if: ${{ failure() }}

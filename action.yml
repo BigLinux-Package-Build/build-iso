@@ -9,12 +9,12 @@ inputs:
   edition:
     description: 'name of the iso profile to build'
     required: true
-  manjarobranch: 
+  manjarobranch:
     description: 'stable (default), testing, unstable'
     required: false
     default: stable
   bigbranch:
-    description: 'stable, beta, development'
+    description: 'stable, testing, development'
     required: true
   scope:
     description: 'full (default) or minimal image'
@@ -39,6 +39,13 @@ inputs:
     required: false
   tmate:
     description: 'run tmate'
+    required: false
+  repo-mirror:
+    description: 'mirror to use in build'
+    default: repo
+    required: false
+  repo-dev:
+    description: 'developmente repository'
     required: false
     
 outputs:
@@ -252,11 +259,13 @@ runs:
       shell: bash
       env:
         CUSTOM_REPO: ${{ inputs.custom-repo }}
+        COMMIT: b3efa6f6929bfc7fc62328b64ab4ebc0800111ce
       run: |
         echo "### install-manjaro-tools ###"
         #make majaro-tools
         sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-tools.git
         pushd manjaro-tools
+          sudo git checkout $COMMIT
           sudo make SYSCONFDIR=/etc PREFIX=/usr
           sudo make SYSCONFDIR=/etc PREFIX=/usr install_base
           sudo make SYSCONFDIR=/etc PREFIX=/usr install_yaml
@@ -378,49 +387,68 @@ runs:
         #sudo sed -i "s|miso_pxe_common miso_pxe_http miso_pxe_nbd miso_pxe_nfs||g" /usr/share/manjaro-tools/mkinitcpio.conf
 
         #add big update repository
-        if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-default.conf)" ];then
-            sudo sed -i '/SyncFirst/s/$/ biglinux-keyring/' /usr/share/manjaro-tools/pacman-default.conf
-        fi
-        if [ -z "$(grep biglinux-update-stable /usr/share/manjaro-tools/pacman-default.conf)" ];then
-            sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
-            sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
-            # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/devdevdev.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
-            sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
-            sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
-            if [ "${{ inputs.bigbranch }}" = "development" ];then
-              echo '
-              
+        #if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-default.conf)" ];then
+        sudo sed -i '/SyncFirst/s/$/ biglinux-keyring/' /usr/share/manjaro-tools/pacman-default.conf
+        #fi
+        #if [ -z "$(grep biglinux-update-stable /usr/share/manjaro-tools/pacman-default.conf)" ];then
+            
+        sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/${{ inputs.repo-mirror }}.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+        sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-default.conf
+            
+        if [ "${{ inputs.bigbranch }}" = "testing" ];then
+        echo "
         [biglinux-testing]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
-            fi
-            echo '
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/testing/$arch" | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
+        
+        elif [ "${{ inputs.bigbranch }}" = "development" ];then
+          echo "
+        ${{ inputs.repo-dev }}
+        
+        [biglinux-testing]
+        SigLevel = PackageRequired
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/testing/$arch" | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
+        #fi
+          echo "
         [biglinux-stable]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/stable/$arch "| sudo tee -a /usr/share/manjaro-tools/pacman-default.conf
         fi
         
-        if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
-          sudo sed -i '/SyncFirst/s/$/ biglinux-keyring/' /usr/share/manjaro-tools/pacman-multilib.conf
-        fi
-        if [ -z "$(grep biglinux-update-stable /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
-          sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
-          sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
-          # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/devdevdev.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
-          sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
-          sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
-          if [ "${{ inputs.bigbranch }}" = "development" ];then
-            echo '
+        # if [ -z "$(grep biglinux-keyring /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
+        sudo sed -i '/SyncFirst/s/$/ biglinux-keyring/' /usr/share/manjaro-tools/pacman-multilib.conf
+        # fi
+        # if [ -z "$(grep biglinux-update-stable /usr/share/manjaro-tools/pacman-multilib.conf)" ];then
+          
+        sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-update-stable\]/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+        # sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/${{ inputs.repo-mirror }}.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-multilib.conf
+          
+        if [ "${{ inputs.bigbranch }}" = "testing" ];then
+          echo "
         [biglinux-testing]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/testing/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
-          fi
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/testing/$arch" | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
+        
+        elif [ "${{ inputs.bigbranch }}" = "development" ];then
+          echo "
+        ${{ inputs.repo-dev }}
+        
+        [biglinux-testing]
+        SigLevel = PackageRequired
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/testing/$arch" | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
+        fi
           
-          echo '
+          echo "
         [biglinux-stable]
         SigLevel = PackageRequired
-        Server = https://devdevdev.biglinux.com.br/stable/$arch' | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
-        fi
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/stable/$arch" | sudo tee -a /usr/share/manjaro-tools/pacman-multilib.conf
+        # fi
         
         # # Disable remove pkgs cache
         sudo sed -i 's|path=$1/var/lib/pacman/sync|path=$1/usr/share/man|'g /usr/lib/manjaro-tools/util-iso-image.sh
@@ -503,13 +531,8 @@ runs:
           echo "BUILD_RELEASE=${{ inputs.release-tag }}" | cut -d "_" -f1 | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
         fi
         
-        # Beta
-        if [ "$BIGBRANCH" = "beta" ];then
-          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
-        fi
-        
-        # Development
-        if [ "$BIGBRANCH" = "development" ];then
+        # Testing
+        if [ "$BIGBRANCH" = "testing" ];then
           #add repo testing
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/biglinux/$EDITION/user-repos.conf
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*/\[biglinux-testing\]/;p;x;}' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
@@ -526,6 +549,15 @@ runs:
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/biglinux/$EDITION/user-repos.conf
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
           sudo sed -i '/\[biglinux-stable\]/{h;s/.*//;p;x;}' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
+        fi
+        
+        # Development
+        if [ "$BIGBRANCH" = "development" ];then
+          #add repo testing
+          cp /usr/share/manjaro-tools/pacman-multilib.conf iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
+          cp /usr/share/manjaro-tools/pacman-multilib.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
           
           #add anti-ruscher
           echo anti-ruscher | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
@@ -556,7 +588,7 @@ runs:
         fi
         
         sudo rm -Rf /var/lib/manjaro-tools/buildiso/*
-      
+        
         OUTPUT_ISO_PATH=$(find /var/cache/manjaro-tools/iso -type f -name "*.iso" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}')
         
         if [ "${EDITION}" = "xivastudio" ]; then
@@ -574,10 +606,10 @@ runs:
         
         #Kernel Name
         if [ "$KERNEL" != "xanmod" ];then
-            KERNEL=k${KERNEL}
+          KERNEL=k${KERNEL}
         elif [ "$KERNEL" = "xanmod" ];then
-            xanVer=$(grep linux-xanmod $(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}') | grep -v headers | cut -d " " -f2 | cut -d "-" -f1 | sed ':a;$!{N;ba;};s/\(.*\)\..*/\1/' | sed 's/\.//')
-            KERNEL=$(echo ${KERNEL} | sed 's/-//')${xanVer}
+          xanVer=$(grep linux-xanmod $(find /var/cache/manjaro-tools/iso -type f -name "*-pkgs.txt" -exec stat -c '%Y %n' {} \; | sort -nr | awk 'NR==1 {print $2}') | grep -v headers | cut -d " " -f2 | cut -d "-" -f1 | sed ':a;$!{N;ba;};s/\(.*\)\..*/\1/' | sed 's/\.//')
+          KERNEL=$(echo ${KERNEL} | sed 's/-//')${xanVer}
         fi
             
         #renome ISO
