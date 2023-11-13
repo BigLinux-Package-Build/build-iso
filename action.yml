@@ -406,7 +406,9 @@ runs:
         
         elif [ "${{ inputs.bigbranch }}" = "development" ];then
           echo "
-        ${{ inputs.repo-dev }}
+        [biglinux-${{ inputs.repo-dev }}]
+        SigLevel = PackageRequired
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/${{ inputs.repo-dev }}/$arch
         
         [biglinux-testing]
         SigLevel = PackageRequired
@@ -437,7 +439,9 @@ runs:
         
         elif [ "${{ inputs.bigbranch }}" = "development" ];then
           echo "
-        ${{ inputs.repo-dev }}
+        [biglinux-${{ inputs.repo-dev }}]
+        SigLevel = PackageRequired
+        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/${{ inputs.repo-dev }}/$arch
         
         [biglinux-testing]
         SigLevel = PackageRequired
