@@ -575,7 +575,7 @@ runs:
           
           [biglinux-stable]
           SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/testing/"'$arch'"" | sudo tee -a iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          Server = https://repo.biglinux.com.br/stable/"'$arch'"" | sudo tee -a iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
           
           #add anti-ruscher
           echo anti-ruscher | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
