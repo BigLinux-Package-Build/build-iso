@@ -559,9 +559,23 @@ runs:
         
         # Development
         if [ "$BIGBRANCH" = "development" ];then
-          #add repo testing
-          sudo cp /usr/share/manjaro-tools/pacman-multilib.conf iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
-          sudo cp /usr/share/manjaro-tools/pacman-multilib.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          #add repo
+        
+          sudo sed -i '/\[biglinux-stable\]/,$d' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
+          sudo sed -i '/\[biglinux-stable\]/,$d' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+          
+          echo "
+          [biglinux-${{ inputs.repo-dev }}]
+          SigLevel = PackageRequired
+          Server = https://repo.biglinux.com.br/${{ inputs.repo-dev }}/"'$arch'"
+          
+          [biglinux-testing]
+          SigLevel = PackageRequired
+          Server = https://repo.biglinux.com.br/testing/"'$arch'"
+          
+          [biglinux-stable]
+          SigLevel = PackageRequired
+          Server = https://repo.biglinux.com.br/testing/"'$arch'"" | sudo tee -a iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
           
           #add anti-ruscher
           echo anti-ruscher | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
