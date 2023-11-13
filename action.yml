@@ -263,7 +263,7 @@ runs:
       run: |
         echo "### install-manjaro-tools ###"
         #make majaro-tools
-        sudo git clone --depth 1 https://gitlab.manjaro.org/tools/development-tools/manjaro-tools.git
+        sudo git clone https://gitlab.manjaro.org/tools/development-tools/manjaro-tools.git
         pushd manjaro-tools
           # sudo git checkout $COMMIT
           sudo make SYSCONFDIR=/etc PREFIX=/usr
