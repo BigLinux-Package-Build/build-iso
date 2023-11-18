@@ -1,4 +1,4 @@
-name: Biglinux Build ISO Beta
+name: Biglinux Build ISO Testing
 on:
   workflow_dispatch:
     inputs:
