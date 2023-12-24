@@ -139,7 +139,7 @@ jobs:
         shell: bash
         run: |
           ls -lh
-          #release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
+          release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
           # iso is too big - creating a split-zip
           #zip -j -0 -s 1950m ${release}.zip ${release}.iso
           #ls -lh
