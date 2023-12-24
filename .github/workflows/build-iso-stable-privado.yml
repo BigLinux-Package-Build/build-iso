@@ -135,6 +135,11 @@ jobs:
           # echo "::set-output name=upload-files::./${{ steps.image-build.outputs.file-path }}+(|.sha*|.pkgs|.sig|.torrent|.md5)"
           # mkdir -p ${{ inputs.edition }}/${{ inputs.version }}
       
+      # Tmate ##
+      - name: Setup TMATE Session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+        
       - name: Publish Package on GitHub
         shell: bash
         run: |
@@ -162,11 +167,6 @@ jobs:
           git config --local user.name "${{ secrets.GIT_USER }}"
           git commit -m "new release"
           git push
-          
-      # Tmate ##
-      - name: Setup TMATE Session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
             
       - name: Telegram Alert Success
         shell: bash
