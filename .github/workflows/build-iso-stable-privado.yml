@@ -139,10 +139,10 @@ jobs:
         shell: bash
         run: |
           ls -lh
-          release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
+          #release=$(find . -name *.iso | cut -d "/" -f2 | sed 's/.iso//')
           # iso is too big - creating a split-zip
-          zip -j -0 -s 1950m ${release}.zip ${release}.iso
-          ls -lh
+          #zip -j -0 -s 1950m ${release}.zip ${release}.iso
+          #ls -lh
           echo ${{ secrets.TOKEN_RELEASE }} | gh auth login --with-token
           gh release create ${release} --title ${release} --repo ${{ secrets.REPO_ISO_TESTING }} --notes "automated release from CI/CD" || echo "release already exists"
           for i in *.z* *.md5 *.pkgs; do 
