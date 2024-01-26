@@ -33,7 +33,7 @@ jobs:
     strategy:
       matrix:
         EDITION: [kde, xivastudio]
-        MANJAROBRANCH: [testing]
+        MANJAROBRANCH: [stable]
         BIGBRANCH: [development]
         EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
