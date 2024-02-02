@@ -378,7 +378,7 @@ runs:
 
         # plymouth
         # Add video modules to use plymouth in live mode
-        sudo sed -i "s|loop dm-snapshot|loop dm-snapshot amdgpu radeon i915 nouveau mgag200 bochs virtio-gpu qxl vmwgfx cirrus vmwgfx vboxvideo|g" /usr/share/manjaro-tools/mkinitcpio.conf
+        # sudo sed -i "s|loop dm-snapshot|loop dm-snapshot amdgpu radeon i915 nouveau mgag200 bochs virtio-gpu qxl vmwgfx cirrus vmwgfx vboxvideo|g" /usr/share/manjaro-tools/mkinitcpio.conf
 
         # Enable plymouth and kms
         sudo sed -i "s|keyboard keymap|keyboard keymap kms plymouth|g" /usr/share/manjaro-tools/mkinitcpio.conf
