@@ -32,8 +32,8 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [kde, xivastudio]
-        MANJAROBRANCH: [stable]
+        EDITION: [kde]
+        MANJAROBRANCH: [stable, testing]
         BIGBRANCH: [development]
         EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
@@ -54,6 +54,7 @@ jobs:
           tmate: ${{ inputs.debug_enabled }}
           repo-mirror: ${{ secrets.REPO_MIRROR }}
           repo-dev: ${{ secrets.REPO_DEV }}
+          repo-man-testing: ${{ secrets.REPO_MAN_TESTING }}
           
       # - name: Prepare Files to Upload
         # shell: bash
