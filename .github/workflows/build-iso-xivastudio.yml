@@ -1,4 +1,4 @@
-name: Biglinux Build ISO XIVAStudio
+name: 01 Biglinux Build ISO XIVAStudio
 on:
   workflow_dispatch:
     inputs:
