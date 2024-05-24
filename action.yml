@@ -159,6 +159,7 @@ runs:
             sudo meson install -C build
           popd
           sudo install -m644 pacman.conf /etc/pacman.conf
+          sudo sed -i '/SyncFirst/d' /etc/pacman.conf
           sudo install -m644 makepkg.conf /etc/
           sudo mkdir -p /etc/pacman.d
           # sudo touch /etc/pacman.d/mirrorlist
@@ -289,6 +290,7 @@ runs:
         sudo sed -i "s|https://mirror.alpix.eu/manjaro|${mirror}|" /lib/manjaro-tools/util.sh
         sudo sed -i '/ParallelDownloads/s/#//' /usr/share/manjaro-tools/pacman-multilib.conf
         sudo sed -i '/ParallelDownloads/s/5/8/' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/SyncFirst/d' /usr/share/manjaro-tools/pacman-multilib.conf
         
         #
         [ "$SCOPE" == "minimal" ] && unset SCOPE && unset OFFICE
@@ -426,6 +428,7 @@ runs:
         Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/stable/"'$arch'"" | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
         fi
         
+        sudo sed -i '/SyncFirst/d' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
         
         # # Disable remove pkgs cache
         sudo sed -i 's|path=$1/var/lib/pacman/sync|path=$1/usr/share/man|'g /usr/lib/manjaro-tools/util-iso-image.sh
