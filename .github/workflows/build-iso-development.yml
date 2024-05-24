@@ -32,7 +32,7 @@ jobs:
     needs: [prepare-release]
     strategy:
       matrix:
-        EDITION: [kde]
+        EDITION: [kde, xivastudio]
         MANJAROBRANCH: [stable]
         BIGBRANCH: [development]
         EXTRAREPO: [testing]
