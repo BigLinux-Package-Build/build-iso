@@ -509,7 +509,7 @@ runs:
         
         # Stable
         if [ "$BIGBRANCH" = "stable" ];then
-          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | sed -E 's/_[0-9]{2}-[0-9]{2}//' | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
+          echo "BUILD_RELEASE=${{ inputs.release-tag }}" | cut -d "_" -f1 | sudo tee -a iso-profiles/biglinux/$EDITION/root-overlay/etc/big-release
         fi
         
         # Testing
