@@ -53,7 +53,7 @@ jobs:
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           tmate: ${{ inputs.debug_enabled }}
           repo-mirror: ${{ secrets.REPO_MIRROR }}
-          repo_dev: ${{ secrets.REPO_UNSTABLE }}
+          repo-dev: ${{ secrets.REPO_UNSTABLE }}
           mirror_unstable: ${{ secrets.MIRROR_UNSTABLE }}
           repo-man-testing: ${{ secrets.REPO_MAN_TESTING }}
           
