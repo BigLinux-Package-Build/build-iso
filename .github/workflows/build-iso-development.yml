@@ -53,7 +53,8 @@ jobs:
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           tmate: ${{ inputs.debug_enabled }}
           repo-mirror: ${{ secrets.REPO_MIRROR }}
-          repo-dev: ${{ secrets.REPO_DEV }}
+          repo_dev: ${{ secrets.REPO_UNSTABLE }}
+          mirror_unstable: ${{ secrets.MIRROR_UNSTABLE }}
           repo-man-testing: ${{ secrets.REPO_MAN_TESTING }}
           
       # - name: Prepare Files to Upload

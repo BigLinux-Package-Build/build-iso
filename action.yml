@@ -47,6 +47,9 @@ inputs:
   repo-dev:
     description: 'developmente repository'
     required: false
+  mirror_unstable:
+    description: 'developmente mirror'
+    required: false
   repo-man-testing:
     description: 'repository with packages build fron manjaro testing'
     required: false
@@ -414,15 +417,15 @@ runs:
         Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/testing/"'$arch'"" | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
         
         elif [ "${{ inputs.bigbranch }}" = "development" ];then
-          echo "
-        [biglinux-${{ inputs.repo-dev }}]
+        echo '
+        [bigiborg-'"${{ inputs.repo-dev }}"']
         SigLevel = PackageRequired
-        Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/${{ inputs.repo-dev }}/"'$arch'"
+        Server = https://'"${{ inputs.mirror_unstable }}"'/$arch'"
         
         [biglinux-testing]
         SigLevel = PackageRequired
         Server = https://${{ inputs.repo-mirror }}.biglinux.com.br/testing/"'$arch'"" | sudo tee -a /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
-        #fi
+
           echo "
         [biglinux-stable]
         SigLevel = PackageRequired
@@ -542,9 +545,9 @@ runs:
           sudo sed -i '/\[biglinux-stable\]/,$d' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
           
           echo "
-          [biglinux-${{ inputs.repo-dev }}]
+          [bigiborg-${{ inputs.repo-dev }}]
           SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/${{ inputs.repo-dev }}/"'$arch'"
+          Server = https://${{ inputs.mirror_unstable }}"'/$arch'"
           
           [biglinux-testing]
           SigLevel = PackageRequired
