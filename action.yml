@@ -544,18 +544,18 @@ runs:
           sudo sed -i '/\[biglinux-stable\]/,$d' iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf
           sudo sed -i '/\[biglinux-stable\]/,$d' iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
           
-          echo "
-          [bigiborg-${{ inputs.repo-dev }}]
-          SigLevel = PackageRequired
-          Server = https://${{ inputs.mirror_unstable }}"'/$arch'"
-          
-          [biglinux-testing]
-          SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/testing/"'$arch'"
-          
-          [biglinux-stable]
-          SigLevel = PackageRequired
-          Server = https://repo.biglinux.com.br/stable/"'$arch'"" | sudo tee -a iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
+        echo "
+        [bigiborg-${{ inputs.repo-dev }}]
+        SigLevel = PackageRequired
+        Server = https://${{ inputs.mirror_unstable }}"'/$arch'"
+
+        [biglinux-testing]
+        SigLevel = PackageRequired
+        Server = https://repo.biglinux.com.br/testing/"'$arch'"
+
+        [biglinux-stable]
+        SigLevel = PackageRequired
+        Server = https://repo.biglinux.com.br/stable/"'$arch'"" | sudo tee -a iso-profiles/biglinux/$EDITION/live-overlay/etc/pacman.conf iso-profiles/biglinux/$EDITION/root-overlay/etc/pacman.conf
           
           #add anti-ruscher
           # echo anti-ruscher | sudo tee -a iso-profiles/biglinux/$EDITION/Packages-Root
