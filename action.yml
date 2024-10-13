@@ -291,8 +291,8 @@ runs:
         # sudo sed -i "s|https://mirror.alpix.eu/manjaro|${{ inputs.build-mirror }}|" /lib/manjaro-tools/util.sh
         mirror=$(cat /etc/pacman.d/mirrorlist | head -n1 | awk '{print $3}' | sed -ne 's/\(manjaro\).*/\1/p')
         sudo sed -i "s|https://mirror.alpix.eu/manjaro|${mirror}|" /lib/manjaro-tools/util.sh
-        # sudo sed -i '/ParallelDownloads/s/#//' /usr/share/manjaro-tools/pacman-multilib.conf
-        # sudo sed -i '/ParallelDownloads/s/5/8/' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/ParallelDownloads/s/#//' /usr/share/manjaro-tools/pacman-multilib.conf
+        sudo sed -i '/ParallelDownloads/s/5/1/' /usr/share/manjaro-tools/pacman-multilib.conf
         sudo sed -i '/SyncFirst/d' /usr/share/manjaro-tools/pacman-multilib.conf
         
         #
