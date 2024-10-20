@@ -579,6 +579,8 @@ runs:
         echo $MANJAROBRANCH
         echo $BIGBRANCH
         echo $MESA
+
+        mkdir -p /var/lib/manjaro-tools/buildiso/kde/x86_64/bootfs/boot/
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
         
