@@ -581,6 +581,7 @@ runs:
         echo $MESA
 
         sudo mkdir -p /var/lib/manjaro-tools/buildiso/kde/x86_64/bootfs/boot/
+        sudo mkdir -p /var/lib/manjaro-tools/buildiso/FalaQueEuTeEscuto/x86_64/bootfs/boot/
         
         sudo buildiso ${SCOPE:+-f} -p $EDITION -b $MANJAROBRANCH -k linux${KERNEL} ${OFFICE:+-o}
         
