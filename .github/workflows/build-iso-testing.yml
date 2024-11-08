@@ -33,9 +33,8 @@ jobs:
     strategy:
       matrix:
         # EDITION: [kde,xivastudio]
-        EDITION: [kde]
-        # EDITION: [FalaQueEuTeEscuto]
-        MANJAROBRANCH: [testing]
+        EDITION: [FalaQueEuTeEscuto]
+        MANJAROBRANCH: [stable]
         BIGBRANCH: [testing]
         # EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
@@ -53,7 +52,7 @@ jobs:
           iso-profiles-repo: 'https://github.com/biglinux/iso-profiles'
           release-tag: ${{ needs.prepare-release.outputs.release_tag }}
           tmate: ${{ inputs.debug_enabled }}
-          # repo-mirror: ${{ secrets.REPO_MIRROR }}
+          repo-mirror: ${{ secrets.REPO_MIRROR }}
           repo-dev: ${{ secrets.REPO_DEV }}
           
       # - name: Prepare Files to Upload
