@@ -34,7 +34,7 @@ jobs:
       matrix:
         # EDITION: [kde,xivastudio]
         EDITION: [FalaQueEuTeEscuto]
-        MANJAROBRANCH: [stable]
+        MANJAROBRANCH: [testing]
         BIGBRANCH: [testing]
         # EXTRAREPO: [testing]
         #KERNEL: [510, 515, 519]
