@@ -404,11 +404,11 @@ runs:
         sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/repo.biglinux.com.br\/update-stable\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
         sudo sed -i '/\[core\]/{h;s/.*//;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
         
-        if [ "${{ inputs.manjarobranch }}" = "testing" ];then
-          sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-${{ inputs.repo-man-testing }}\]/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
-          sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
-          sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/${{ inputs.repo-mirror }}.biglinux.com.br\/${{ inputs.repo-man-testing }}\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
-        fi
+        # if [ "${{ inputs.manjarobranch }}" = "testing" ];then
+        #   sudo sed -i '/\[core\]/{h;s/.*/\[biglinux-${{ inputs.repo-man-testing }}\]/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
+        #   sudo sed -i '/\[core\]/{h;s/.*/SigLevel = PackageRequired/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
+        #   sudo sed -i '/\[core\]/{h;s/.*/Server = https:\/\/${{ inputs.repo-mirror }}.biglinux.com.br\/${{ inputs.repo-man-testing }}\/$arch/;p;x;}' /usr/share/manjaro-tools/pacman-default.conf /usr/share/manjaro-tools/pacman-multilib.conf
+        # fi
         
         if [ "${{ inputs.bigbranch }}" = "testing" ];then
         echo "
